@@ -20,3 +20,14 @@ func (si *Storage) UserCreate(ctx context.Context, login string, password string
 	}
 	return nil
 }
+
+func (si *Storage) UserGet(ctx context.Context, login string) (userID string, hashedPass string, err error) {
+	row := si.driver.QueryRowContext(ctx, `SELECT id, password FROM users WHERE login ilike $1 limit 1`, login)
+	err = row.Scan(&userID, &hashedPass)
+	if err != nil {
+		logger.Logger.Error("Error when scan data from storage", "err", err)
+		return "", "", err
+	}
+
+	return userID, hashedPass, err
+}

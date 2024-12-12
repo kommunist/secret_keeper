@@ -1,6 +1,8 @@
 package tui
 
 import (
+	"secret_keeper/internal/client/current"
+
 	"github.com/rivo/tview"
 )
 
@@ -11,18 +13,23 @@ type menuItem struct {
 }
 
 func (t *Tui) Hello() {
+	if current.UserSeted() {
+		t.Menu()
+	} else {
 
-	menu := []menuItem{
-		{name: "Log IN", shortcut: 'a', target: t.LogIN},
-		{name: "Sign UP", shortcut: 'b', target: t.SignUP},
-	}
-
-	list := tview.NewList()
-	for _, item := range menu {
-		if item.target != nil {
-			list.AddItem(item.name, "", item.shortcut, item.target)
+		menu := []menuItem{
+			{name: "Log IN", shortcut: 'a', target: t.SignIN},
+			{name: "Sign UP", shortcut: 'b', target: t.SignUP},
+			{name: "Exit", shortcut: 'e', target: func() { t.application.Stop() }},
 		}
 
+		list := tview.NewList()
+		for _, item := range menu {
+			if item.target != nil {
+				list.AddItem(item.name, "", item.shortcut, item.target)
+			}
+
+		}
+		t.Show(list)
 	}
-	t.Show(list)
 }
