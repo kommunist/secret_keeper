@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"os"
 	"secret_keeper/internal/client/logger"
 
 	_ "github.com/lib/pq"
@@ -12,13 +11,13 @@ type Storage struct {
 	driver *sql.DB
 }
 
-func Make(dsn string) Storage {
+func Make(dsn string) (Storage, error) {
 	driver, err := sql.Open("postgres", dsn)
 
 	if err != nil {
 		logger.Logger.Error("Error when open database", "err", err)
-		os.Exit(1) // TODO сделать вынос ошибки
+		return Storage{}, err
 	}
 
-	return Storage{driver: driver}
+	return Storage{driver: driver}, nil
 }

@@ -1,27 +1,35 @@
 package app
 
 import (
+	"secret_keeper/internal/client/logger"
 	"secret_keeper/internal/client/signin"
 	"secret_keeper/internal/client/signup"
 	"secret_keeper/internal/client/storage/repository"
 	"secret_keeper/internal/client/tui"
-
-	"github.com/rivo/tview"
 )
+
+type Storager interface {
+	signup.UserCreator
+	signin.UserGetter
+}
 
 type App struct {
 	tui    tui.Tui     // Морда в терминале
 	signup signup.Item // Сервис регистрации
 	signin signin.Item // Сервис регистрации
 
-	storage repository.Storage // База
-	pages   tview.Pages
+	storage Storager // База
 }
 
-func Make() App {
+func Make() (App, error) {
 
 	// TODO переделать на нормальный конфиг
-	stor := repository.Make("postgresql://postgres:postgres@localhost:5435/secret_keeper")
+	stor, err := repository.Make("postgresql://postgres:postgres@localhost:5435/secret_keeper")
+	if err != nil {
+		logger.Logger.Error("Error when make storage", "err", err)
+		return App{}, err
+	}
+
 	signUPItem := signup.Make(&stor)
 	signINItem := signin.Make(&stor)
 
@@ -34,8 +42,8 @@ func Make() App {
 		tui:     tuiItem,
 		signup:  signUPItem,
 		signin:  signINItem,
-		storage: stor,
-	}
+		storage: &stor,
+	}, nil
 }
 
 func (a *App) Start() {

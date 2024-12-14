@@ -37,11 +37,6 @@ func Make(signupFunc signup.CallFunc, signinFunc signin.CallFunc) Tui {
 	}
 }
 
-// func (t *Tui) InitPages() {
-// 	t.Pages.AddPage("hello", t.Hello(), false, true)
-// }
-
-// func (t *Tui) Start(prim tview.Primitive) {
 func (t *Tui) Start() {
 	err := t.application.Run()
 	if err != nil {

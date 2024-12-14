@@ -22,5 +22,4 @@ func (t *Tui) SignIN() {
 func (t *Tui) SignINSaveButton(sif signin.Form) {
 	t.signinFunc(sif)
 	t.Menu()
-	// t.Hello()
 }
