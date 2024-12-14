@@ -21,15 +21,8 @@ type Tui struct {
 func Make(signupFunc signup.CallFunc, signinFunc signin.CallFunc) Tui {
 	application := tview.NewApplication()
 	box := tview.NewBox().SetBorder(true).SetTitle("secret_keeper_client")
-	// pages := tview.NewPages()
-	// application.SetRoot(
-	// 	pages,
-	// 	// tview.NewBox().SetBorder(true).SetTitle("secret_keeper_client"),
-	// 	true,
-	// ).SetFocus(pages)
 
 	return Tui{
-		// Pages:       *pages,
 		box:         box,
 		application: application,
 		signupFunc:  signupFunc,
