@@ -2,6 +2,7 @@ package signin
 
 import (
 	"context"
+	"errors"
 	"secret_keeper/internal/client/current"
 	"secret_keeper/internal/client/encrypt"
 	"secret_keeper/internal/client/errors/incorrectpass"
@@ -16,7 +17,7 @@ func (i *Item) Call(f Form) error {
 	}
 
 	if !encrypt.CheckPasswordHash(f.Password, hashedPass) {
-		return incorrectpass.NewIncorrectPassError(nil)
+		return incorrectpass.NewIncorrectPassError(errors.New("incorrect pass"))
 	}
 
 	current.SetUser(f.Login, f.Password, userID)

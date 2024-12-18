@@ -24,3 +24,7 @@ func SetUser(login string, password string, ID string) {
 func UserSeted() bool {
 	return User.ID != ""
 }
+
+func UnsetUser() {
+	User = UserInstance{}
+}
