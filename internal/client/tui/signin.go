@@ -10,7 +10,7 @@ func (t *Tui) SignIN() {
 	sif := signin.MakeForm()
 
 	form := tview.NewForm()
-	form.SetBorder(true).SetTitle("Enter some data").SetTitleAlign(tview.AlignLeft)
+	form.SetBorder(true).SetTitle("SignIN").SetTitleAlign(tview.AlignLeft)
 	form = form.AddInputField("Login", "", 20, nil, func(text string) { sif.Login = text })
 	form = form.AddInputField("Password", "", 20, nil, func(text string) { sif.Password = text })
 	form = form.AddButton("Save", func() { t.SignINSaveButton(sif) })
@@ -20,6 +20,10 @@ func (t *Tui) SignIN() {
 }
 
 func (t *Tui) SignINSaveButton(sif signin.Form) {
-	t.signinFunc(sif)
-	t.Menu()
+	err := t.signinFunc(sif)
+	if err != nil {
+		t.Hello()
+	} else {
+		t.Menu()
+	}
 }

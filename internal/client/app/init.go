@@ -2,6 +2,7 @@ package app
 
 import (
 	"secret_keeper/internal/client/logger"
+	"secret_keeper/internal/client/secret"
 	"secret_keeper/internal/client/signin"
 	"secret_keeper/internal/client/signup"
 	"secret_keeper/internal/client/storage/repository"
@@ -11,6 +12,7 @@ import (
 type Storager interface {
 	signup.UserCreator
 	signin.UserGetter
+	secret.SecretAccessor
 }
 
 type App struct {
@@ -32,10 +34,13 @@ func Make() (App, error) {
 
 	signUPItem := signup.Make(&stor)
 	signINItem := signin.Make(&stor)
+	secretItem := secret.Make(&stor)
 
 	tuiItem := tui.Make(
 		signUPItem.Call, // метод для регистрации
 		signINItem.Call, // метод для логина
+		secretItem.Create,
+		secretItem.List,
 	)
 
 	return App{
@@ -49,4 +54,8 @@ func Make() (App, error) {
 func (a *App) Start() {
 	a.tui.Hello()
 	a.tui.Start()
+}
+
+func (a *App) Stop() {
+	a.tui.Stop()
 }

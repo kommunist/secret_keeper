@@ -2,6 +2,7 @@ package tui
 
 import (
 	"secret_keeper/internal/client/current"
+	"secret_keeper/internal/client/logger"
 
 	"github.com/rivo/tview"
 )
@@ -13,6 +14,7 @@ type menuItem struct {
 }
 
 func (t *Tui) Hello() {
+	logger.Logger.Info("User setedd", "setedd", current.UserSeted())
 	if current.UserSeted() {
 		t.Menu()
 	} else {

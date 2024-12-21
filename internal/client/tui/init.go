@@ -2,31 +2,43 @@ package tui
 
 import (
 	"secret_keeper/internal/client/logger"
+	"secret_keeper/internal/client/secret"
 	"secret_keeper/internal/client/signin"
 	"secret_keeper/internal/client/signup"
 
 	"github.com/rivo/tview"
 )
 
+// TODO придумать, как показывать ошибки в TUI. Сейчас пока сделал вывод ошибок только в
+// логгер
+
 type Tui struct {
 	application *tview.Application
 
 	box tview.Primitive
-	// Pages tview.Pages
 
-	signupFunc signup.CallFunc
-	signinFunc signin.CallFunc
+	signupFunc       signup.CallFunc
+	signinFunc       signin.CallFunc
+	createSecretFunc secret.CallFunc
+	listSecretFunc   secret.ListFunc
 }
 
-func Make(signupFunc signup.CallFunc, signinFunc signin.CallFunc) Tui {
+func Make(
+	signupFunc signup.CallFunc,
+	signinFunc signin.CallFunc,
+	createSecretFunc secret.CallFunc,
+	listSecretFunc secret.ListFunc,
+) Tui {
 	application := tview.NewApplication()
 	box := tview.NewBox().SetBorder(true).SetTitle("secret_keeper_client")
 
 	return Tui{
-		box:         box,
-		application: application,
-		signupFunc:  signupFunc,
-		signinFunc:  signinFunc,
+		box:              box,
+		application:      application,
+		signupFunc:       signupFunc,
+		signinFunc:       signinFunc,
+		createSecretFunc: createSecretFunc,
+		listSecretFunc:   listSecretFunc,
 	}
 }
 
@@ -34,8 +46,12 @@ func (t *Tui) Start() {
 	err := t.application.Run()
 	if err != nil {
 		logger.Logger.Error("Error when start tui", "err", err)
-		panic(err) // вытащитьб обработку ошибки
+		panic(err) // TODO вытащить обработку ошибки
 	}
+}
+
+func (t *Tui) Stop() {
+	t.application.Stop()
 }
 
 func (t *Tui) Show(item tview.Primitive) {

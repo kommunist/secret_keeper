@@ -4,9 +4,9 @@ import "github.com/rivo/tview"
 
 func (t *Tui) Menu() {
 	menu := []menuItem{
-		{name: "Мои пароли", shortcut: 'a', target: nil},
-		{name: "Мои документы", shortcut: 'b', target: nil},
-		{name: "Выйти", shortcut: 'c', target: func() { t.application.Stop() }},
+		{name: "My secrets", shortcut: 'a', target: func() { t.SecretList() }},
+		{name: "Add secret", shortcut: 'b', target: func() { t.SecretAdd() }},
+		{name: "Exit", shortcut: 'c', target: func() { t.application.Stop() }},
 	}
 
 	list := tview.NewList()

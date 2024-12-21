@@ -10,7 +10,7 @@ func (t *Tui) SignUP() {
 	suf := signup.MakeForm()
 
 	form := tview.NewForm()
-	form.SetBorder(true).SetTitle("SignUP. Enter your data").SetTitleAlign(tview.AlignLeft)
+	form.SetBorder(true).SetTitle("SignUP").SetTitleAlign(tview.AlignLeft)
 	form = form.AddInputField("Login", "", 20, nil, func(text string) { suf.Login = text })
 	form = form.AddInputField("Password", "", 20, nil, func(text string) { suf.Password = text })
 

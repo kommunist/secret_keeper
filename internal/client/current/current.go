@@ -22,6 +22,7 @@ func SetUser(login string, password string, ID string) {
 }
 
 func UserSeted() bool {
+	logger.Logger.Info("Current user", "ID", User.ID)
 	return User.ID != ""
 }
 
