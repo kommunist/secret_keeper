@@ -41,6 +41,7 @@ func Make() (App, error) {
 		signINItem.Call, // метод для логина
 		secretItem.Create,
 		secretItem.List,
+		secretItem.Show,
 	)
 
 	return App{

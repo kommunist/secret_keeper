@@ -4,7 +4,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE secrets (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    name text UNIQUE,
+    name text,
     pass text,
     meta text,
 

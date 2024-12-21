@@ -29,7 +29,7 @@ func (si *Storage) SecretCreate(
 func (si *Storage) SecretList(ctx context.Context, userID string) ([]models.Secret, error) {
 	rows, err := si.driver.QueryContext(
 		ctx,
-		"SELECT name, pass, meta from secrets where user_id = $1",
+		"SELECT id, name, pass, meta, version from secrets where user_id = $1",
 		userID,
 	)
 
@@ -44,7 +44,7 @@ func (si *Storage) SecretList(ctx context.Context, userID string) ([]models.Secr
 	for rows.Next() {
 		inst := models.MakeSecret()
 
-		errScan := rows.Scan(&inst.Name, &inst.Pass, &inst.Meta)
+		errScan := rows.Scan(&inst.ID, &inst.Name, &inst.Pass, &inst.Meta, &inst.Ver)
 		if errScan != nil {
 			slog.Error("When scan data from select", "err", errScan)
 			return nil, errScan
@@ -53,4 +53,22 @@ func (si *Storage) SecretList(ctx context.Context, userID string) ([]models.Secr
 	}
 
 	return result, nil
+}
+
+func (si *Storage) SecretShow(ctx context.Context, ID string) (models.Secret, error) {
+	m := models.Secret{}
+
+	row := si.driver.QueryRowContext(
+		ctx,
+		"SELECT id, name, pass, meta, version from secrets where ID = $1",
+		ID,
+	)
+
+	err := row.Scan(&m.ID, &m.Name, &m.Pass, &m.Meta, &m.Ver)
+
+	if err != nil {
+		logger.Logger.Error("Error when select secrets", "err", err)
+		return models.Secret{}, err
+	}
+	return m, nil
 }

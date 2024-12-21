@@ -6,28 +6,42 @@ import (
 	"github.com/rivo/tview"
 )
 
-func (t *Tui) SecretAddForm(sf secret.Form) tview.Primitive {
+func (t *Tui) SecretForm(sf secret.Form) tview.Primitive {
 	form := tview.NewForm()
 	form.SetBorder(true).SetTitle("Create new secret").SetTitleAlign(tview.AlignLeft)
+	form = form.AddTextView("ID", sf.ID, 40, 1, false, false)
+	form = form.AddTextView("ID", sf.ID, 40, 1, false, false)
+
 	form = form.AddInputField("Login", sf.Name, 20, nil, func(text string) { sf.Name = text })
 	form = form.AddInputField("Password", sf.Pass, 20, nil, func(text string) { sf.Pass = text })
 	form = form.AddTextArea("Meta", sf.Meta, 20, 20, 100, func(text string) { sf.Meta = text })
-	form = form.AddButton("Save", func() { t.SaveSecretButton(sf) })
+	form = form.AddButton("Save", func() { t.SecretSaveButton(sf) })
 	form = form.AddButton("Back", func() { t.Menu() })
 
 	return form
 }
 
-func (t *Tui) SecretAddPage(sf secret.Form) {
-	prim := t.SecretAddForm(sf)
+func (t *Tui) SecretCreatePage(sf secret.Form) {
+	prim := t.SecretForm(sf)
 
 	t.Show(prim)
 }
 
-func (t *Tui) SaveSecretButton(sf secret.Form) {
+func (t *Tui) SecretUpdatePage(ID string) {
+	sf, err := t.showSecretFunc(ID)
+	if err != nil {
+		// TODO: Обработать ошибку модалкой
+	} else {
+		prim := t.SecretForm(sf)
+
+		t.Show(prim)
+	}
+}
+
+func (t *Tui) SecretSaveButton(sf secret.Form) {
 	err := t.createSecretFunc(sf)
 	if err != nil {
-		t.ErrorModal(err.Error(), t.SecretAddForm(sf))
+		t.ErrorModal(err.Error(), t.SecretForm(sf))
 	} else {
 		t.Menu()
 	}

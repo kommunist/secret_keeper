@@ -17,10 +17,13 @@ type Tui struct {
 
 	box tview.Primitive
 
-	signupFunc       signup.CallFunc
-	signinFunc       signin.CallFunc
+	signupFunc signup.CallFunc
+	signinFunc signin.CallFunc
+
+	// functions for secret
 	createSecretFunc secret.CallFunc
 	listSecretFunc   secret.ListFunc
+	showSecretFunc   secret.ShowFunc
 }
 
 func Make(
@@ -28,6 +31,7 @@ func Make(
 	signinFunc signin.CallFunc,
 	createSecretFunc secret.CallFunc,
 	listSecretFunc secret.ListFunc,
+	showSecretFunc secret.ShowFunc,
 ) Tui {
 	application := tview.NewApplication()
 	box := tview.NewBox().SetBorder(true).SetTitle("secret_keeper_client")
@@ -39,6 +43,7 @@ func Make(
 		signinFunc:       signinFunc,
 		createSecretFunc: createSecretFunc,
 		listSecretFunc:   listSecretFunc,
+		showSecretFunc:   showSecretFunc,
 	}
 }
 

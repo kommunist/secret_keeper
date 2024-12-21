@@ -9,7 +9,7 @@ import (
 func (t *Tui) Menu() {
 	menu := []menuItem{
 		{name: "My secrets", shortcut: 'a', target: func() { t.SecretList() }},
-		{name: "Add secret", shortcut: 'b', target: func() { t.SecretAddPage(secret.MakeForm()) }},
+		{name: "Add secret", shortcut: 'b', target: func() { t.SecretCreatePage(secret.MakeForm()) }},
 		{name: "Exit", shortcut: 'c', target: func() { t.application.Stop() }},
 	}
 

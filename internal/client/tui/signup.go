@@ -28,5 +28,7 @@ func (t *Tui) SignUPSaveButton(suf signup.Form) {
 	err := t.signupFunc(suf)
 	if err != nil {
 		t.ErrorModal(err.Error(), t.SignUPForm(suf))
+	} else {
+		t.Hello()
 	}
 }

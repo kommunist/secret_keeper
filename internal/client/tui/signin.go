@@ -27,5 +27,7 @@ func (t *Tui) SignInSaveButton(sif signin.Form) {
 	err := t.signinFunc(sif)
 	if err != nil {
 		t.ErrorModal(err.Error(), t.SignInForm(sif))
+	} else {
+		t.Menu()
 	}
 }
