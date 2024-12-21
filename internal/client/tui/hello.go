@@ -3,6 +3,8 @@ package tui
 import (
 	"secret_keeper/internal/client/current"
 	"secret_keeper/internal/client/logger"
+	"secret_keeper/internal/client/signin"
+	"secret_keeper/internal/client/signup"
 
 	"github.com/rivo/tview"
 )
@@ -20,8 +22,8 @@ func (t *Tui) Hello() {
 	} else {
 
 		menu := []menuItem{
-			{name: "Log IN", shortcut: 'a', target: t.SignIN},
-			{name: "Sign UP", shortcut: 'b', target: t.SignUP},
+			{name: "Log IN", shortcut: 'a', target: func() { t.SignInPage(signin.MakeForm()) }},
+			{name: "Sign UP", shortcut: 'b', target: func() { t.SignUPPage(signup.MakeForm()) }},
 			{name: "Exit", shortcut: 'e', target: func() { t.application.Stop() }},
 		}
 

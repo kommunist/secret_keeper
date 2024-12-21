@@ -1,11 +1,15 @@
 package tui
 
-import "github.com/rivo/tview"
+import (
+	"secret_keeper/internal/client/secret"
+
+	"github.com/rivo/tview"
+)
 
 func (t *Tui) Menu() {
 	menu := []menuItem{
 		{name: "My secrets", shortcut: 'a', target: func() { t.SecretList() }},
-		{name: "Add secret", shortcut: 'b', target: func() { t.SecretAdd() }},
+		{name: "Add secret", shortcut: 'b', target: func() { t.SecretAddPage(secret.MakeForm()) }},
 		{name: "Exit", shortcut: 'c', target: func() { t.application.Stop() }},
 	}
 
