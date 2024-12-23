@@ -19,6 +19,9 @@ const upsertSQL = `
 		version = excluded.version
 `
 
+const listSQL = "SELECT id, name, pass, meta, version from secrets where user_id = $1"
+const showSQL = "SELECT id, name, pass, meta, version from secrets where ID = $1"
+
 // Метод, создающий/обновляющий секрет в базе
 func (si *Storage) SecretUpsert(
 	ctx context.Context,
@@ -43,11 +46,7 @@ func (si *Storage) SecretUpsert(
 
 // Метод, достающий секреты текущего пользователя
 func (si *Storage) SecretList(ctx context.Context, userID string) ([]models.Secret, error) {
-	rows, err := si.driver.QueryContext(
-		ctx,
-		"SELECT id, name, pass, meta, version from secrets where user_id = $1",
-		userID,
-	)
+	rows, err := si.driver.QueryContext(ctx, listSQL, userID)
 
 	if err != nil {
 		logger.Logger.Error("Error when select secrets", "err", err)
@@ -75,11 +74,7 @@ func (si *Storage) SecretList(ctx context.Context, userID string) ([]models.Secr
 func (si *Storage) SecretShow(ctx context.Context, ID string) (models.Secret, error) {
 	m := models.Secret{}
 
-	row := si.driver.QueryRowContext(
-		ctx,
-		"SELECT id, name, pass, meta, version from secrets where ID = $1",
-		ID,
-	)
+	row := si.driver.QueryRowContext(ctx, showSQL, ID)
 
 	err := row.Scan(&m.ID, &m.Name, &m.Pass, &m.Meta, &m.Ver)
 
