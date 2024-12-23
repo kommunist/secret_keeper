@@ -20,10 +20,6 @@ func MakeForm() Form {
 	return Form{}
 }
 
-func MakeFormFromModel(m models.Secret) Form {
-	return Form(m)
-}
-
 type SecretAccessor interface {
 	SecretUpsert(ctx context.Context, id string, name string, pass string, meta string, userID string, version string) error
 	SecretList(ctx context.Context, userID string) ([]models.Secret, error)
