@@ -1,4 +1,4 @@
-package signin
+package user
 
 import (
 	"context"
@@ -6,15 +6,16 @@ import (
 
 type CallFunc func(f Form) error
 
-type UserGetter interface {
+type UserAccessor interface {
 	UserGet(ctx context.Context, login string) (userID string, hashedPass string, err error)
+	UserCreate(ctx context.Context, login string, password string) error
 }
 
 type Item struct {
-	storage UserGetter
+	storage UserAccessor
 }
 
-func Make(stor UserGetter) Item {
+func Make(stor UserAccessor) Item {
 	return Item{
 		storage: stor,
 	}

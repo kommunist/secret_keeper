@@ -1,4 +1,4 @@
-package signin
+package user
 
 import (
 	"context"
@@ -53,12 +53,12 @@ func TestCall(t *testing.T) {
 		t.Run(ex.name, func(t *testing.T) {
 			defer current.UnsetUser()
 
-			stor := NewMockUserGetter(gomock.NewController(t))
+			stor := NewMockUserAccessor(gomock.NewController(t))
 			item := Make(stor)
 
 			stor.EXPECT().UserGet(context.Background(), "Login").Return(ex.returnedID, ex.retrunedPass, ex.returnedErr)
 
-			err := item.Call(ex.form)
+			err := item.SignIN(ex.form)
 
 			if ex.wihError {
 				assert.Error(t, err)

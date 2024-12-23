@@ -1,53 +1,49 @@
 package app
 
 import (
+	"secret_keeper/internal/client/config"
 	"secret_keeper/internal/client/logger"
 	"secret_keeper/internal/client/secret"
-	"secret_keeper/internal/client/signin"
-	"secret_keeper/internal/client/signup"
 	"secret_keeper/internal/client/storage/repository"
 	"secret_keeper/internal/client/tui"
+	"secret_keeper/internal/client/user"
 )
 
 type Storager interface {
-	signup.UserCreator
-	signin.UserGetter
+	user.UserAccessor
 	secret.SecretAccessor
 }
 
 type App struct {
-	tui    tui.Tui     // Морда в терминале
-	signup signup.Item // Сервис регистрации
-	signin signin.Item // Сервис регистрации
+	tui tui.Tui // Морда в терминале
 
 	storage Storager // База
 }
 
 func Make() (App, error) {
+	conf := config.Make()
+	conf.Init()
 
-	// TODO переделать на нормальный конфиг
-	stor, err := repository.Make("postgresql://postgres:postgres@localhost:5435/secret_keeper")
+	stor, err := repository.Make(conf.DatabaseURI)
+
 	if err != nil {
 		logger.Logger.Error("Error when make storage", "err", err)
 		return App{}, err
 	}
 
-	signUPItem := signup.Make(&stor)
-	signINItem := signin.Make(&stor)
+	userItem := user.Make(&stor)
 	secretItem := secret.Make(&stor)
 
 	tuiItem := tui.Make(
-		signUPItem.Call, // метод для регистрации
-		signINItem.Call, // метод для логина
-		secretItem.Create,
-		secretItem.List,
-		secretItem.Show,
+		userItem.SignUP,   // метод для регистрации
+		userItem.SignIN,   // метод для логина
+		secretItem.Upsert, // метод для создания/обновления секрета
+		secretItem.List,   // метод для получения списка секретов
+		secretItem.Show,   // метод для получения одного секрета
 	)
 
 	return App{
 		tui:     tuiItem,
-		signup:  signUPItem,
-		signin:  signINItem,
 		storage: &stor,
 	}, nil
 }

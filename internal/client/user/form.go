@@ -1,4 +1,4 @@
-package signin
+package user
 
 type Form struct {
 	Login    string

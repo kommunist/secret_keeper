@@ -9,6 +9,7 @@ import (
 	"github.com/rivo/tview"
 )
 
+// Список секретов текущего пользователя
 func (t *Tui) SecretList() {
 	items, err := t.listSecretFunc()
 	if err != nil {

@@ -1,4 +1,4 @@
-package signup
+package user
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCall(t *testing.T) {
+func TestSignUP(t *testing.T) {
 	form := MakeForm()
 	form.Login = "Login"
 	form.Password = "Password"
@@ -29,13 +29,13 @@ func TestCall(t *testing.T) {
 	}
 	for _, ex := range exList {
 		t.Run(ex.name, func(t *testing.T) {
-			stor := NewMockUserCreator(gomock.NewController(t))
+			stor := NewMockUserAccessor(gomock.NewController(t))
 			item := Make(stor)
 
 			// Пока сделал gomock.Any потому что не знаю, как замокать вызов хеширующей функции
 			stor.EXPECT().UserCreate(context.Background(), "Login", gomock.Any()).Return(ex.returnedErr)
 
-			err := item.Call(form)
+			err := item.SignUP(form)
 			if ex.returnedErr != nil {
 				assert.Error(t, err)
 			} else {

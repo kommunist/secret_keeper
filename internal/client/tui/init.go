@@ -3,22 +3,18 @@ package tui
 import (
 	"secret_keeper/internal/client/logger"
 	"secret_keeper/internal/client/secret"
-	"secret_keeper/internal/client/signin"
-	"secret_keeper/internal/client/signup"
+	"secret_keeper/internal/client/user"
 
 	"github.com/rivo/tview"
 )
-
-// TODO придумать, как показывать ошибки в TUI. Сейчас пока сделал вывод ошибок только в
-// логгер
 
 type Tui struct {
 	application *tview.Application
 
 	box tview.Primitive
 
-	signupFunc signup.CallFunc
-	signinFunc signin.CallFunc
+	signupFunc user.CallFunc
+	signinFunc user.CallFunc
 
 	// functions for secret
 	createSecretFunc secret.CallFunc
@@ -27,8 +23,8 @@ type Tui struct {
 }
 
 func Make(
-	signupFunc signup.CallFunc,
-	signinFunc signin.CallFunc,
+	signupFunc user.CallFunc,
+	signinFunc user.CallFunc,
 	createSecretFunc secret.CallFunc,
 	listSecretFunc secret.ListFunc,
 	showSecretFunc secret.ShowFunc,

@@ -5,19 +5,34 @@ import (
 	"log/slog"
 	"secret_keeper/internal/client/logger"
 	"secret_keeper/internal/client/models"
+
+	"github.com/google/uuid"
 )
 
-func (si *Storage) SecretCreate(
+const upsertSQL = `
+		INSERT INTO secrets (id, name, pass, meta, user_id, version)
+		VALUES ($1, $2, $3, $4, $5, $6)
+		ON CONFLICT ( id ) DO UPDATE SET
+		name = excluded.name,
+		pass = excluded.pass,
+		meta = excluded.meta,
+		version = excluded.version
+`
+
+// Метод, создающий/обновляющий секрет в базе
+func (si *Storage) SecretUpsert(
 	ctx context.Context,
+	id string,
 	name string, pass string, meta string, userID string, version string,
 ) error {
 
-	// TODO сделать обработку ситуации, когда такой name уже существует
+	if id == "" { // Если запись новая
+		id = uuid.New().String()
+	}
 
 	_, err := si.driver.ExecContext(
-		ctx,
-		"INSERT INTO secrets (name, pass, meta, user_id, version) VALUES ($1, $2, $3, $4, $5)",
-		name, pass, meta, userID, version,
+		ctx, upsertSQL,
+		id, name, pass, meta, userID, version,
 	)
 	if err != nil {
 		logger.Logger.Error("Error when insert secret", "err", err)
@@ -26,6 +41,7 @@ func (si *Storage) SecretCreate(
 	return nil
 }
 
+// Метод, достающий секреты текущего пользователя
 func (si *Storage) SecretList(ctx context.Context, userID string) ([]models.Secret, error) {
 	rows, err := si.driver.QueryContext(
 		ctx,
@@ -55,6 +71,7 @@ func (si *Storage) SecretList(ctx context.Context, userID string) ([]models.Secr
 	return result, nil
 }
 
+// Метод, позволяющий смотреть один конкретный секрет
 func (si *Storage) SecretShow(ctx context.Context, ID string) (models.Secret, error) {
 	m := models.Secret{}
 
