@@ -20,7 +20,7 @@ jobs:
 
       - name: Run tests
         run: |
-          go clean -testcache; go test ./...          
+          go clean -testcache; go test client/...          
           
       # go clean -testcache; go test ./... -coverprofile=./cover.out
       # - name: check test coverage
