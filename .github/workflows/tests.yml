@@ -16,7 +16,7 @@ jobs:
       
       - name: Run tests
         run: |
-          go clean -testcache; go test client/...          
+          cd client ; go clean -testcache; go test client/...; cd ..;          
           
       # go clean -testcache; go test ./... -coverprofile=./cover.out
       # - name: check test coverage
