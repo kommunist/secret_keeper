@@ -16,7 +16,9 @@ jobs:
       
       - name: Tests on client
         run: |
-          go clean -testcache; go test client/...          
+          go clean -testcache; go test client/... -coverprofile=cover.out.tmp
+          cat cover.out.tmp | grep -v 'tui'  > cover.out
+          go tool cover -func=cover.out | grep total
 
       - name: Tests on server
         run: |
