@@ -14,7 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       
-      - name: Tests on client
+      - name: Tests and coverage on client
         run: |
           go clean -testcache; go test client/... -coverprofile=cover.out.tmp
           cat cover.out.tmp | grep -v 'tui'  > cover.out
@@ -22,4 +22,5 @@ jobs:
 
       - name: Tests on server
         run: |
-          go clean -testcache; go test server/...          
+          go clean -testcache; go test server/... -coverprofile=cover.out
+          go tool cover -func=cover.out | grep total
