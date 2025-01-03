@@ -5,11 +5,12 @@ import (
 	"client/internal/encrypt"
 	"client/internal/errors/incorrectpass"
 	"client/internal/logger"
+	"client/internal/models"
 	"context"
 	"errors"
 )
 
-func (i *Item) SignIN(f Form) error {
+func (i *Item) SignIN(f models.User) error {
 	userID, hashedPass, err := i.storage.UserGet(context.Background(), f.Login)
 	if err != nil {
 		logger.Logger.Error("Error when get user from storage", "err", err)

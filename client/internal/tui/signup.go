@@ -1,12 +1,12 @@
 package tui
 
 import (
-	"client/internal/user"
+	"client/internal/models"
 
 	"github.com/rivo/tview"
 )
 
-func (t *Tui) SignUPForm(suf user.Form) tview.Primitive {
+func (t *Tui) SignUPForm(suf models.User) tview.Primitive {
 	form := tview.NewForm()
 	form.SetBorder(true).SetTitle("SignUP").SetTitleAlign(tview.AlignLeft)
 	form = form.AddInputField("Login", suf.Login, 20, nil, func(text string) { suf.Login = text })
@@ -18,13 +18,13 @@ func (t *Tui) SignUPForm(suf user.Form) tview.Primitive {
 	return form
 }
 
-func (t *Tui) SignUPPage(suf user.Form) {
+func (t *Tui) SignUPPage(suf models.User) {
 	prim := t.SignUPForm(suf)
 
 	t.Show(prim)
 }
 
-func (t *Tui) SignUPSaveButton(suf user.Form) {
+func (t *Tui) SignUPSaveButton(suf models.User) {
 	err := t.signupFunc(suf)
 	if err != nil {
 		t.ErrorModal(err.Error(), t.SignUPForm(suf))

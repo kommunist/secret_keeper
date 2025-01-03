@@ -1,6 +1,7 @@
 package user
 
 import (
+	"client/internal/models"
 	"context"
 	"errors"
 	"testing"
@@ -10,7 +11,7 @@ import (
 )
 
 func TestSignUP(t *testing.T) {
-	form := MakeForm()
+	form := models.MakeUser()
 	form.Login = "Login"
 	form.Password = "Password"
 

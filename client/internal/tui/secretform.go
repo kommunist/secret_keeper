@@ -1,13 +1,13 @@
 package tui
 
 import (
-	"client/internal/secret"
+	"client/internal/models"
 
 	"github.com/rivo/tview"
 )
 
 // Форма для работы с секретом
-func (t *Tui) SecretForm(sf secret.Form) tview.Primitive {
+func (t *Tui) SecretForm(sf models.Secret) tview.Primitive {
 	form := tview.NewForm()
 	form.SetBorder(true).SetTitle("Create new secret").SetTitleAlign(tview.AlignLeft)
 	form = form.AddTextView("ID", sf.ID, 40, 1, false, false)
@@ -23,7 +23,7 @@ func (t *Tui) SecretForm(sf secret.Form) tview.Primitive {
 }
 
 // Страница работы с новым секретом
-func (t *Tui) SecretCreatePage(sf secret.Form) {
+func (t *Tui) SecretCreatePage(sf models.Secret) {
 	prim := t.SecretForm(sf)
 
 	t.Show(prim)
@@ -42,7 +42,7 @@ func (t *Tui) SecretUpdatePage(ID string) {
 }
 
 // Кнопка сохранения на форме
-func (t *Tui) SecretSaveButton(sf secret.Form) {
+func (t *Tui) SecretSaveButton(sf models.Secret) {
 	err := t.createSecretFunc(sf)
 	if err != nil {
 		t.ErrorModal(err.Error(), t.SecretForm(sf))

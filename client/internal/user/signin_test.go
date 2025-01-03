@@ -3,6 +3,7 @@ package user
 import (
 	"client/internal/current"
 	"client/internal/encrypt"
+	"client/internal/models"
 	"context"
 	"errors"
 	"testing"
@@ -12,13 +13,13 @@ import (
 )
 
 func TestCall(t *testing.T) {
-	f := MakeForm()
+	f := models.MakeUser()
 	f.Login = "Login"
 	f.Password = "Password"
 
 	exList := []struct {
 		name         string
-		form         Form
+		form         models.User
 		returnedID   string
 		retrunedPass string
 		returnedErr  error

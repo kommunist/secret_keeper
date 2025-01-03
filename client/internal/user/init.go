@@ -1,10 +1,11 @@
 package user
 
 import (
+	"client/internal/models"
 	"context"
 )
 
-type CallFunc func(f Form) error
+type CallFunc func(f models.User) error
 
 type UserAccessor interface {
 	UserGet(ctx context.Context, login string) (userID string, hashedPass string, err error)

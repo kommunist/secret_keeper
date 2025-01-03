@@ -5,20 +5,7 @@ import (
 	"context"
 )
 
-type CallFunc func(f Form) error
-
-// Форма для создания и редактирования секрета. Добавлена для удобства работы с формой)
-type Form struct {
-	ID   string
-	Name string
-	Pass string
-	Meta string
-	Ver  string
-}
-
-func MakeForm() Form {
-	return Form{}
-}
+type CallFunc func(s models.Secret) error
 
 type SecretAccessor interface {
 	SecretUpsert(ctx context.Context, id string, name string, pass string, meta string, userID string, version string) error

@@ -2,6 +2,7 @@ package secret
 
 import (
 	"client/internal/current"
+	"client/internal/models"
 	"context"
 	"errors"
 	"testing"
@@ -30,7 +31,7 @@ func TestUpsert(t *testing.T) {
 
 			item := Make(stor)
 
-			form := MakeForm()
+			form := models.MakeSecret()
 			form.ID = "id"
 			form.Meta = "meta"
 			form.Name = "name"

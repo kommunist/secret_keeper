@@ -3,7 +3,7 @@ package tui
 import (
 	"client/internal/current"
 	"client/internal/logger"
-	"client/internal/user"
+	"client/internal/models"
 
 	"github.com/rivo/tview"
 )
@@ -21,8 +21,8 @@ func (t *Tui) Hello() {
 	} else {
 
 		menu := []menuItem{
-			{name: "Log IN", shortcut: 'a', target: func() { t.SignInPage(user.MakeForm()) }},
-			{name: "Sign UP", shortcut: 'b', target: func() { t.SignUPPage(user.MakeForm()) }},
+			{name: "Log IN", shortcut: 'a', target: func() { t.SignInPage(models.MakeUser()) }},
+			{name: "Sign UP", shortcut: 'b', target: func() { t.SignUPPage(models.MakeUser()) }},
 			{name: "Exit", shortcut: 'e', target: func() { t.application.Stop() }},
 		}
 
