@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUserCreate(t *testing.T) {
+func TestUserSet(t *testing.T) {
 	exList := []struct {
 		name    string
 		storErr error
@@ -29,7 +29,7 @@ func TestUserCreate(t *testing.T) {
 			user := models.MakeUser()
 
 			user.Login = "Login"
-			user.Password = "Password"
+			user.HashedPass = "Password"
 			ctx := context.Background()
 
 			db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
@@ -41,7 +41,7 @@ func TestUserCreate(t *testing.T) {
 			stor := Storage{driver: db}
 
 			exp := mock.ExpectExec("INSERT INTO users (login, password) VALUES ($1, $2)").WithArgs(
-				user.Login, user.Password,
+				user.Login, user.HashedPass,
 			)
 			if ex.storErr != nil {
 				exp.WillReturnError(ex.storErr)

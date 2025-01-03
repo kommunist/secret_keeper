@@ -64,14 +64,6 @@ func TestSecretUpsert(t *testing.T) {
 					UserID:  "userUd",
 					Version: "version",
 				},
-				{
-					ID:      "anotherIdOfSecret",
-					Name:    "anotherNameOfSecret",
-					Pass:    "anotherPassOfSecret",
-					Meta:    "anotherMetaOfSecret",
-					UserID:  "anotherUserUd",
-					Version: "anotherVersion",
-				},
 			}
 
 			ctx := context.Background()
@@ -85,8 +77,7 @@ func TestSecretUpsert(t *testing.T) {
 
 			if ex.beginErr == nil {
 				expQuery := mock.ExpectExec(upsertSQL).WithArgs(
-					"('idOfSecret', 'nameOfSecret', 'passOfSecret', 'metaOfSecret', 'userUd', 'version')," +
-						" ('anotherIdOfSecret', 'anotherNameOfSecret', 'anotherPassOfSecret', 'anotherMetaOfSecret', 'anotherUserUd', 'anotherVersion')",
+					list[0].ID, list[0].Name, list[0].Pass, list[0].Meta, list[0].UserID, list[0].Version,
 				)
 
 				if ex.queryErr == nil {
