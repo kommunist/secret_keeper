@@ -18,14 +18,10 @@ jobs:
         run: |
           go get ./...
 
-      - name: Run tests
+      - name: Tests on client
         run: |
-          go clean -testcache; go test ./...          
-          
-      # go clean -testcache; go test ./... -coverprofile=./cover.out
-      # - name: check test coverage
-      #   uses: vladopajic/go-test-coverage@v2
-      #   with:
-      #     profile: cover.out
-      #     threshold-total: 1
-      #     badge-file-name: coverage.svg
+          go clean -testcache; go test client/...          
+
+      - name: Tests on server
+        run: |
+          go clean -testcache; go test server/...          
