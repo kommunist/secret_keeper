@@ -2,14 +2,15 @@ package repository
 
 import (
 	"client/internal/logger"
+	"client/internal/models"
 	"context"
 )
 
-func (si *Storage) UserCreate(ctx context.Context, login string, password string) error {
+func (si *Storage) UserCreate(ctx context.Context, u models.User) error {
 	_, err := si.driver.ExecContext(
 		ctx,
-		"INSERT INTO users (login, password) VALUES ($1, $2)",
-		login, password,
+		"INSERT INTO users (id, login, password) VALUES ($1, $2, $3)",
+		u.ID, u.Login, u.HashedPassword,
 	)
 	if err != nil {
 		logger.Logger.Error("Error when insert user", "err", err)
@@ -18,13 +19,15 @@ func (si *Storage) UserCreate(ctx context.Context, login string, password string
 	return nil
 }
 
-func (si *Storage) UserGet(ctx context.Context, login string) (userID string, hashedPass string, err error) {
-	row := si.driver.QueryRowContext(ctx, `SELECT id, password FROM users WHERE login ilike $1 limit 1`, login)
-	err = row.Scan(&userID, &hashedPass)
+func (si *Storage) UserGet(ctx context.Context, login string) (user models.User, err error) {
+	user = models.MakeUser()
+
+	row := si.driver.QueryRowContext(ctx, `SELECT id, login, password FROM users WHERE login ilike $1 limit 1`, login)
+	err = row.Scan(&user.ID, &user.Login, &user.HashedPassword)
 	if err != nil {
 		logger.Logger.Error("Error when scan data from storage", "err", err)
-		return "", "", err
+		return models.User{}, err
 	}
 
-	return userID, hashedPass, err
+	return user, err
 }

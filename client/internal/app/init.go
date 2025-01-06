@@ -3,8 +3,10 @@ package app
 import (
 	"client/internal/config"
 	"client/internal/logger"
+	"client/internal/roamer"
 	"client/internal/secret"
 	"client/internal/storage/repository"
+	"client/internal/syncer"
 	"client/internal/tui"
 	"client/internal/user"
 )
@@ -12,12 +14,14 @@ import (
 type Storager interface {
 	user.UserAccessor
 	secret.SecretAccessor
+	syncer.SyncerStorageAccessor
 }
 
 type App struct {
 	tui tui.Tui // Морда в терминале
 
 	storage Storager // База
+	syncer  syncer.Item
 }
 
 func Make() (App, error) {
@@ -31,7 +35,13 @@ func Make() (App, error) {
 		return App{}, err
 	}
 
-	userItem := user.Make(&stor)
+	roamer := roamer.Make(conf)
+
+	syncer := syncer.Make(conf, &stor, roamer)
+
+	userItem := user.Make(
+		&stor, conf, roamer,
+	)
 	secretItem := secret.Make(&stor)
 
 	tuiItem := tui.Make(
@@ -45,10 +55,13 @@ func Make() (App, error) {
 	return App{
 		tui:     tuiItem,
 		storage: &stor,
+		syncer:  syncer,
 	}, nil
 }
 
 func (a *App) Start() {
+	a.syncer.Start()
+
 	a.tui.Hello()
 	a.tui.Start()
 }

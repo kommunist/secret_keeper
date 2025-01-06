@@ -7,13 +7,18 @@ import (
 	"context"
 	"fmt"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 func (i *Item) Upsert(f models.Secret) error {
-	err := i.storage.SecretUpsert(
-		context.Background(),
-		f.ID, f.Name, f.Pass, f.Meta, current.User.ID, fmt.Sprintf("%v", time.Now().Unix()),
-	)
+	f.Version = fmt.Sprintf("%v", time.Now().Unix())
+	f.UserID = current.User.ID
+	if f.ID == "" {
+		f.ID = uuid.New().String()
+	}
+
+	err := i.storage.SecretsUpsert(context.Background(), []models.Secret{f})
 	if err != nil {
 		logger.Logger.Error("Error when create secret", "err", err)
 		return err

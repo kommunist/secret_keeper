@@ -1,8 +1,11 @@
 package models
 
+// TODO при регистрации мы должны отправлять только login и password
 type User struct {
-	Login    string
-	Password string
+	ID             string `json:"id"`
+	Login          string `json:"login"`
+	Password       string `json:"password"`
+	HashedPassword string `json:"hashed_password"`
 }
 
 func MakeUser() User {

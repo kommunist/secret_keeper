@@ -10,6 +10,8 @@ import (
 )
 
 func (h *Interactor) Handler(w http.ResponseWriter, r *http.Request) {
+	slog.Info("Handle request of userset")
+
 	body, err := io.ReadAll(r.Body)
 	defer r.Body.Close()
 
@@ -28,7 +30,7 @@ func (h *Interactor) Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// если логика обработки вырастет, то целесообразно вытащить в отдельный сервис
-	user.HashedPass, err = encrypt.HashPassword(user.Password)
+	user.HashedPassword, err = encrypt.HashPassword(user.Password)
 	if err != nil {
 		slog.Error("error when hash password", "err", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)

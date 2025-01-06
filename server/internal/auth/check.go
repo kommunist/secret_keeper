@@ -13,7 +13,7 @@ func (i *Item) Check(h http.Handler) http.Handler {
 		ctx := r.Context()
 
 		authLogin := r.Header.Get("Login")
-		authPass := r.Header.Get("Pass")
+		authPass := r.Header.Get("Password")
 
 		model, err := i.storage.UserGet(ctx, authLogin)
 		if err != nil {
@@ -21,11 +21,11 @@ func (i *Item) Check(h http.Handler) http.Handler {
 			return
 		}
 
-		if encrypt.CheckPasswordHash(authPass, model.HashedPass) {
-			ctx = context.WithValue(ctx, UserIDKey, model.ID)
-
+		if encrypt.CheckPasswordHash(authPass, model.HashedPassword) {
+			ctx = context.WithValue(ctx, UserIDKey, model)
 		} else {
 			w.WriteHeader(http.StatusUnauthorized)
+			return
 		}
 
 		h.ServeHTTP(w, r.WithContext(ctx))

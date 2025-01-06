@@ -2,7 +2,6 @@ package tui
 
 import (
 	"client/internal/current"
-	"client/internal/logger"
 	"client/internal/models"
 
 	"github.com/rivo/tview"
@@ -15,7 +14,6 @@ type menuItem struct {
 }
 
 func (t *Tui) Hello() {
-	logger.Logger.Info("User setedd", "setedd", current.UserSeted())
 	if current.UserSeted() {
 		t.Menu()
 	} else {

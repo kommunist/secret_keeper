@@ -17,7 +17,7 @@ const upsertSQL = `
 		WHERE excluded.version > secrets.version
 `
 
-const getSQL = "SELECT id, name, pass, meta, version from secrets where user_id = $1 and version > $2"
+const getSQL = "SELECT id, name, pass, meta, version, user_id from secrets where user_id = $1 and version > $2"
 
 // Метод, создающий/обновляющий секрет в базе
 func (si *Storage) SecretUpsert(ctx context.Context, list []models.Secret) error {
@@ -53,7 +53,7 @@ func (si *Storage) SecretGet(ctx context.Context, userID string, version string)
 	rows, err := si.driver.QueryContext(ctx, getSQL, userID, version)
 
 	if err != nil {
-		slog.Error("Error when select secrets", "err", err)
+		slog.Error("error when select secrets", "err", err)
 		return []models.Secret{}, err
 	}
 	defer rows.Close()
@@ -63,9 +63,9 @@ func (si *Storage) SecretGet(ctx context.Context, userID string, version string)
 	for rows.Next() {
 		inst := models.MakeSecret()
 
-		errScan := rows.Scan(&inst.ID, &inst.Name, &inst.Pass, &inst.Meta, &inst.Version)
+		errScan := rows.Scan(&inst.ID, &inst.Name, &inst.Pass, &inst.Meta, &inst.Version, &inst.UserID)
 		if errScan != nil {
-			slog.Error("When scan data from select", "err", errScan)
+			slog.Error("when scan data from select by secrets", "err", errScan)
 			return nil, errScan
 		}
 		result = append(result, inst)

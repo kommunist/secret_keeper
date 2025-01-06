@@ -11,7 +11,7 @@ func (t *Tui) SecretForm(sf models.Secret) tview.Primitive {
 	form := tview.NewForm()
 	form.SetBorder(true).SetTitle("Create new secret").SetTitleAlign(tview.AlignLeft)
 	form = form.AddTextView("ID", sf.ID, 40, 1, false, false)
-	form = form.AddTextView("ver", sf.Ver, 40, 1, false, false)
+	form = form.AddTextView("ver", sf.Version, 40, 1, false, false)
 
 	form = form.AddInputField("Login", sf.Name, 20, nil, func(text string) { sf.Name = text })
 	form = form.AddInputField("Password", sf.Pass, 20, nil, func(text string) { sf.Pass = text })

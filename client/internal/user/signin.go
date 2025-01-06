@@ -2,26 +2,35 @@ package user
 
 import (
 	"client/internal/current"
-	"client/internal/encrypt"
-	"client/internal/errors/incorrectpass"
 	"client/internal/logger"
 	"client/internal/models"
 	"context"
-	"errors"
+	"database/sql"
 )
 
 func (i *Item) SignIN(f models.User) error {
-	userID, hashedPass, err := i.storage.UserGet(context.Background(), f.Login)
-	if err != nil {
-		logger.Logger.Error("Error when get user from storage", "err", err)
-		return err
+
+	u, err := i.storage.UserGet(context.Background(), f.Login)
+	if err == nil {
+		logger.Logger.Info("user athentificated locally")
+		u.Password = f.Password
+
+		current.SetUser(u)
+		return nil
 	}
+	if err == sql.ErrNoRows {
+		logger.Logger.Info("try to athentificate user by server")
+		u, roerr := i.roamer.UserGet(f)
+		if roerr == nil {
+			i.storage.UserCreate(context.Background(), u)
+			u.Password = f.Password
 
-	if !encrypt.CheckPasswordHash(f.Password, hashedPass) {
-		return incorrectpass.NewIncorrectPassError(errors.New("incorrect pass"))
+			logger.Logger.Info("Current user bore auth", "user", u)
+
+			current.SetUser(u)
+			return nil
+		}
+		return roerr
 	}
-
-	current.SetUser(f.Login, f.Password, userID)
-
-	return nil
+	return err
 }

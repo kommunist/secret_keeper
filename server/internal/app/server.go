@@ -10,7 +10,8 @@ import (
 func (a *App) Start() error {
 	slog.Info("server started", "URL", a.setting.ServerURL)
 
-	err := a.Server.ListenAndServeTLS(a.setting.CertPath, a.setting.CertKeyPath)
+	// err := a.Server.ListenAndServeTLS(a.setting.CertPath, a.setting.CertKeyPath)
+	err := a.Server.ListenAndServe()
 	if err != nil && err != http.ErrServerClosed {
 		slog.Error("Server failed to start with tls", "err", err)
 		return err

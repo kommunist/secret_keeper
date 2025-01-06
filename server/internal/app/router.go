@@ -13,7 +13,7 @@ func (a *App) initRouter() *chi.Mux {
 		r.With(a.authCheck.Check).Group(func(r chi.Router) {
 			r.Post("/secrets", a.secretset.Handler) // Загрузка секретов
 			r.Get("/secrets", a.secretget.Handler)  // Получение секретов
-			r.Post("/auth", a.userget.Handler)      // сознательно выбран POST, чтобы не тащить ничего в урле
+			r.Get("/users", a.userget.Handler)      // Получаем информацию о текущем пользователе
 
 		})
 	})

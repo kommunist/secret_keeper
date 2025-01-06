@@ -45,7 +45,7 @@ func buildHeader(table *tview.Table) {
 func buildRow(ind int, item models.Secret, table *tview.Table) {
 	buildCell(ind+1, 0, fmt.Sprintf("%d", ind), table)
 	buildCell(ind+1, 1, item.ID, table)
-	buildCell(ind+1, 2, item.Ver, table)
+	buildCell(ind+1, 2, item.Version, table)
 	buildCell(ind+1, 3, item.Name, table)
 	buildCell(ind+1, 4, item.Pass, table)
 	buildCell(ind+1, 5, item.Meta, table)

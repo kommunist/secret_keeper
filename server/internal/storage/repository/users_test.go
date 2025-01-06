@@ -29,7 +29,7 @@ func TestUserSet(t *testing.T) {
 			user := models.MakeUser()
 
 			user.Login = "Login"
-			user.HashedPass = "Password"
+			user.HashedPassword = "Password"
 			ctx := context.Background()
 
 			db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
@@ -41,7 +41,7 @@ func TestUserSet(t *testing.T) {
 			stor := Storage{driver: db}
 
 			exp := mock.ExpectExec("INSERT INTO users (login, password) VALUES ($1, $2)").WithArgs(
-				user.Login, user.HashedPass,
+				user.Login, user.HashedPassword,
 			)
 			if ex.storErr != nil {
 				exp.WillReturnError(ex.storErr)
@@ -109,7 +109,7 @@ func TestUserGet(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 				assert.Equal(t, user.ID, "id")
-				assert.Equal(t, user.HashedPass, "pass")
+				assert.Equal(t, user.HashedPassword, "pass")
 			}
 
 			if err = mock.ExpectationsWereMet(); err != nil {

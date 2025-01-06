@@ -1,24 +1,14 @@
 package user
 
 import (
-	"client/internal/encrypt"
 	"client/internal/logger"
 	"client/internal/models"
-	"context"
 )
 
 func (i *Item) SignUP(u models.User) error {
-
-	// TODO вкрутить логику взаимодействия с внешним сервером
-	hashedPass, err := encrypt.HashPassword(u.Password)
+	err := i.roamer.UserSet(u)
 	if err != nil {
-		logger.Logger.Error("Error when hash password", "err", err)
-		return err
-	}
-
-	err = i.storage.UserCreate(context.Background(), u.Login, hashedPass)
-	if err != nil {
-		logger.Logger.Error("Error when create user", "err", err)
+		logger.Logger.Error("error when call roamer", "err", err)
 		return err
 	}
 
