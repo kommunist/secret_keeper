@@ -11,7 +11,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// --- Mock для генерации версии
+type MockVer struct{}
+
+func (i *MockVer) Get() string { return "version" }
+
+// --- Mock для генерации версии
+
 func TestUpsert(t *testing.T) {
+
 	exList := []struct {
 		name    string
 		storErr error
@@ -30,22 +38,27 @@ func TestUpsert(t *testing.T) {
 			stor := NewMockSecretAccessor(gomock.NewController(t))
 
 			item := Make(stor)
+			item.verGet = &MockVer{}
 
-			form := models.MakeSecret()
-			form.ID = "id"
-			form.Meta = "meta"
-			form.Name = "name"
-			form.Pass = "pass"
+			secret := models.MakeSecret()
+			secret.ID = "id"
+			secret.Meta = "meta"
+			secret.Name = "name"
+			secret.Pass = "pass"
+			secret.UserID = "userID"
 
-			current.SetUser("login", "password", "userID")
+			expSecret := secret
+			expSecret.UserID = "userID"
+			expSecret.Version = "version"
+
+			current.SetUser(models.User{Login: "login", Password: "password", ID: "userID"})
+
 			defer current.UnsetUser()
 
-			stor.EXPECT().SecretUpsert(
-				context.Background(),
-				form.ID, form.Name, form.Pass, form.Meta, current.User.ID, gomock.Any(),
-			).Return(ex.storErr)
+			stor.EXPECT().SecretsUpsert(context.Background(), []models.Secret{expSecret}).
+				Return(ex.storErr)
 
-			err := item.Upsert(form)
+			err := item.Upsert(secret)
 
 			if ex.storErr == nil {
 				assert.NoError(t, err)

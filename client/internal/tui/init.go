@@ -43,12 +43,13 @@ func Make(
 	}
 }
 
-func (t *Tui) Start() {
+func (t *Tui) Start() error {
 	err := t.application.Run()
 	if err != nil {
 		logger.Logger.Error("Error when start tui", "err", err)
-		panic(err) // TODO вытащить обработку ошибки
+		return err
 	}
+	return nil
 }
 
 func (t *Tui) Stop() {

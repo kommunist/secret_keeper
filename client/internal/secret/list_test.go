@@ -21,11 +21,11 @@ func TestList(t *testing.T) {
 			name:    "happy_path_list_secret",
 			storErr: nil,
 			model: models.Secret{
-				ID:   "ID",
-				Name: "Name",
-				Pass: "Pass",
-				Meta: "Meta",
-				Ver:  "Ver",
+				ID:      "ID",
+				Name:    "Name",
+				Pass:    "Pass",
+				Meta:    "Meta",
+				Version: "Ver",
 			},
 		},
 		{
@@ -42,11 +42,11 @@ func TestList(t *testing.T) {
 
 			userID := "userID"
 
-			current.SetUser("login", "pass", userID)
+			current.SetUser(models.User{Login: "login", Password: "pass", ID: userID})
 			defer current.UnsetUser()
 
 			stor.EXPECT().SecretList(
-				context.Background(), userID,
+				context.Background(), userID, "0",
 			).Return([]models.Secret{ex.model}, ex.storErr)
 
 			result, err := item.List()

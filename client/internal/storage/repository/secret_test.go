@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"client/internal/models"
 	"context"
 	"errors"
 	"testing"
@@ -9,30 +10,25 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSecretUpsert(t *testing.T) {
+func TestSecretsUpsert(t *testing.T) {
 	exList := []struct {
 		exName  string
-		id      string
 		storErr error
 	}{
 		{
 			exName:  "create_new_simple_happy_path",
-			id:      "",
 			storErr: nil,
 		},
 		{
 			exName:  "create_new_stor_return_error",
-			id:      "",
 			storErr: errors.New("some error"),
 		},
 		{
 			exName:  "update_new_simple_happy_path",
-			id:      "123123",
 			storErr: nil,
 		},
 		{
 			exName:  "update_new_stor_return_error",
-			id:      "123123",
 			storErr: errors.New("some error"),
 		},
 	}
@@ -45,33 +41,28 @@ func TestSecretUpsert(t *testing.T) {
 			defer db.Close()
 
 			ctx := context.Background()
-			name := "nameOfSecret"
-			pass := "passOfSecret"
-			meta := "metaOfSecret"
-			userID := "userUd"
-			version := "version"
+			secret := models.Secret{
+				ID: "123123", Name: "nameOfSecret", Pass: "passOfSecret",
+				Meta: "metaOfSecret", UserID: "userID", Version: "version",
+			}
 
 			stor := Storage{driver: db}
 
-			exp := mock.ExpectExec(upsertSQL)
+			mock.ExpectBegin()
 
-			if ex.id == "" {
-				exp = exp.WithArgs(
-					sqlmock.AnyArg(), name, pass, meta, userID, version,
-				)
-			} else {
-				exp = exp.WithArgs(
-					ex.id, name, pass, meta, userID, version,
-				)
-			}
+			exp := mock.ExpectExec(upsertSQL).WithArgs(
+				secret.ID, secret.Name, secret.Pass, secret.Meta, secret.UserID, secret.Version,
+			)
 
 			if ex.storErr != nil {
 				exp.WillReturnError(ex.storErr)
+				mock.ExpectRollback()
 			} else {
 				exp.WillReturnResult(sqlmock.NewResult(1, 1))
+				mock.ExpectCommit()
 			}
 
-			err = stor.SecretUpsert(ctx, ex.id, name, pass, meta, userID, version)
+			err = stor.SecretsUpsert(ctx, []models.Secret{secret})
 
 			if ex.storErr != nil {
 				assert.Error(t, err)
@@ -115,7 +106,7 @@ func TestSecretList(t *testing.T) {
 
 			stor := Storage{driver: db}
 
-			exp := mock.ExpectQuery(listSQL).WithArgs(userID)
+			exp := mock.ExpectQuery(listSQL).WithArgs(userID, "0")
 
 			id := "id"
 			name := "name"
@@ -132,7 +123,7 @@ func TestSecretList(t *testing.T) {
 				)
 			}
 
-			secrets, err := stor.SecretList(ctx, userID)
+			secrets, err := stor.SecretList(ctx, userID, "0")
 
 			if ex.storErr == nil {
 				assert.Equal(t, 1, len(secrets))
@@ -142,7 +133,7 @@ func TestSecretList(t *testing.T) {
 				assert.Equal(t, name, secrets[0].Name)
 				assert.Equal(t, pass, secrets[0].Pass)
 				assert.Equal(t, meta, secrets[0].Meta)
-				assert.Equal(t, version, secrets[0].Ver)
+				assert.Equal(t, version, secrets[0].Version)
 
 			} else {
 				assert.Equal(t, 0, len(secrets))
@@ -210,7 +201,7 @@ func TestSecretShow(t *testing.T) {
 				assert.Equal(t, name, secret.Name)
 				assert.Equal(t, pass, secret.Pass)
 				assert.Equal(t, meta, secret.Meta)
-				assert.Equal(t, version, secret.Ver)
+				assert.Equal(t, version, secret.Version)
 
 			} else {
 				assert.Error(t, err)

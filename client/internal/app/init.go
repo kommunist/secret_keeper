@@ -59,11 +59,16 @@ func Make() (App, error) {
 	}, nil
 }
 
-func (a *App) Start() {
+func (a *App) Start() error {
 	a.syncer.Start()
 
 	a.tui.Hello()
-	a.tui.Start()
+	err := a.tui.Start()
+	if err != nil {
+		logger.Logger.Error("Start: when start tui", "err", err)
+		return err
+	}
+	return nil
 }
 
 func (a *App) Stop() {

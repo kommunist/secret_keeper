@@ -20,11 +20,11 @@ func TestShow(t *testing.T) {
 			name:    "happy_path_show_secret",
 			storErr: nil,
 			model: models.Secret{
-				ID:   "ID",
-				Name: "Name",
-				Pass: "Pass",
-				Meta: "Meta",
-				Ver:  "Ver",
+				ID:      "ID",
+				Name:    "Name",
+				Pass:    "Pass",
+				Meta:    "Meta",
+				Version: "Ver",
 			},
 		},
 		{
@@ -54,7 +54,7 @@ func TestShow(t *testing.T) {
 				assert.Equal(t, f.Name, ex.model.Name)
 				assert.Equal(t, f.Pass, ex.model.Pass)
 				assert.Equal(t, f.Meta, ex.model.Meta)
-				assert.Equal(t, f.Ver, ex.model.Ver)
+				assert.Equal(t, f.Version, ex.model.Version)
 
 			} else {
 				assert.Error(t, err)

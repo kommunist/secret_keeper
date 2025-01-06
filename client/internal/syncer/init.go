@@ -60,3 +60,9 @@ func (i *Item) Start() {
 		}
 	}()
 }
+
+func (i *Item) Stop() {
+	logger.Logger.Info("Stop syncer")
+
+	i.stoper <- true
+}

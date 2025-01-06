@@ -5,15 +5,15 @@ import (
 	"client/internal/logger"
 	"client/internal/models"
 	"context"
-	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 )
 
 func (i *Item) Upsert(f models.Secret) error {
-	f.Version = fmt.Sprintf("%v", time.Now().Unix())
+
+	f.Version = i.verGet.Get()
 	f.UserID = current.User.ID
+
 	if f.ID == "" {
 		f.ID = uuid.New().String()
 	}
