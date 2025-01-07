@@ -14,7 +14,7 @@ type MainConfig struct {
 func Make() MainConfig {
 	config := MainConfig{
 		DatabaseURI: "",
-		ServerURL:   "",
+		ServerURL:   "localhost:1025",
 	}
 
 	return config

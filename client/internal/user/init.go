@@ -1,9 +1,7 @@
 package user
 
 import (
-	"client/internal/config"
 	"client/internal/models"
-	"client/internal/roamer"
 	"context"
 )
 
@@ -14,14 +12,18 @@ type UserAccessor interface {
 	UserCreate(ctx context.Context, u models.User) error
 }
 
-type Item struct {
-	storage  UserAccessor
-	settings config.MainConfig
-	roamer   roamer.Item
+type RemoteUserAccessor interface {
+	UserSet(f models.User) error
+	UserGet(f models.User) (user models.User, err error)
 }
 
-func Make(stor UserAccessor, settings config.MainConfig, roamer roamer.Item) Item {
+type Item struct {
+	storage UserAccessor
+	roamer  RemoteUserAccessor
+}
+
+func Make(stor UserAccessor, roamer RemoteUserAccessor) Item {
 	return Item{
-		storage: stor, settings: settings, roamer: roamer,
+		storage: stor, roamer: roamer,
 	}
 }

@@ -4,8 +4,6 @@ import (
 	"client/internal/current"
 	"client/internal/logger"
 	"context"
-	"fmt"
-	"time"
 )
 
 func (i *Item) syncSecrets() {
@@ -69,7 +67,7 @@ func (i *Item) getServerSecrets(version string) error {
 }
 
 func (i *Item) saveSyncEvent() error {
-	eventVer := fmt.Sprintf("%v", time.Now().Unix())
+	eventVer := i.verGet.Get()
 	err := i.storage.SaveSyncEvent(context.Background(), "secret", eventVer)
 	if err != nil {
 		logger.Logger.Info("saveSyncEvent: synced data", "version", eventVer)

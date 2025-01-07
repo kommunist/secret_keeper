@@ -6,6 +6,7 @@ import (
 	"database/sql"
 )
 
+// TODO: в перспективе добавить еще и пользователя в эвент.
 const getLastSyncEventQuery = `
   SELECT version from sync_events where kind = $1 order by version desc limit 1
 `

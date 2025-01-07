@@ -2,67 +2,43 @@ package syncer
 
 import (
 	"client/internal/config"
-	"client/internal/logger"
 	"client/internal/models"
-	"client/internal/roamer"
+	"client/internal/versioning"
 	"context"
-	"time"
 )
 
-type secretAccessor interface {
+type StorageAccessor interface {
 	SecretsUpsert(ctx context.Context, list []models.Secret) error
 	SecretList(ctx context.Context, userID string, lastSynced string) ([]models.Secret, error)
-}
 
-type syncEventAccessor interface {
 	GetLastSyncEventVersion(ctx context.Context, kind string) (version string, err error)
 	SaveSyncEvent(ctx context.Context, kind string, version string) error
 }
 
-type SyncerStorageAccessor interface {
-	secretAccessor
-	syncEventAccessor
+type RoamerAccessor interface {
+	SecretGet(version string) (list []models.Secret, err error)
+	SecretSet(list []models.Secret) error
 }
+
+type verGetter interface{ Get() string }
 
 type Item struct {
 	settings config.MainConfig
-	storage  SyncerStorageAccessor
-	roamer   roamer.Item
+	storage  StorageAccessor
+	roamer   RoamerAccessor
 
 	stoper chan bool
+	verGet verGetter
 }
 
-func Make(settings config.MainConfig, storage SyncerStorageAccessor, roamer roamer.Item) Item {
+func Make(settings config.MainConfig, storage StorageAccessor, roamer RoamerAccessor) Item {
 	return Item{
 		settings: settings,
 		storage:  storage,
 		roamer:   roamer,
 
 		stoper: make(chan bool),
+
+		verGet: &versioning.Version{},
 	}
-}
-
-func (i *Item) Start() {
-	logger.Logger.Info("Syncer started")
-
-	ticker := time.NewTicker(5 * time.Second)
-
-	go func() {
-		for {
-			select {
-			case <-ticker.C:
-				logger.Logger.Info("Syncer tick!")
-				i.syncSecrets()
-			case <-i.stoper:
-				ticker.Stop()
-				return
-			}
-		}
-	}()
-}
-
-func (i *Item) Stop() {
-	logger.Logger.Info("Stop syncer")
-
-	i.stoper <- true
 }

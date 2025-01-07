@@ -41,7 +41,7 @@ func TestUpsert(t *testing.T) {
 			item.verGet = &MockVer{}
 
 			secret := models.MakeSecret()
-			secret.ID = "id"
+			secret.ID = "ID"
 			secret.Meta = "meta"
 			secret.Name = "name"
 			secret.Pass = "pass"

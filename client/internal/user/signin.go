@@ -22,10 +22,12 @@ func (i *Item) SignIN(f models.User) error {
 		logger.Logger.Info("try to athentificate user by server")
 		u, roerr := i.roamer.UserGet(f)
 		if roerr == nil {
-			i.storage.UserCreate(context.Background(), u)
+			err = i.storage.UserCreate(context.Background(), u)
+			if err != nil {
+				logger.Logger.Error("when create user locally", "err", err)
+				return err
+			}
 			u.Password = f.Password
-
-			logger.Logger.Info("Current user bore auth", "user", u)
 
 			current.SetUser(u)
 			return nil

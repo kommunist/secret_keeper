@@ -1,69 +1,97 @@
 package user
 
 import (
+	"client/internal/current"
+	"client/internal/models"
+	"context"
+	"database/sql"
+	"errors"
 	"testing"
+
+	gomock "github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCall(t *testing.T) {
-	// f := models.MakeUser()
-	// f.Login = "Login"
-	// f.Password = "Password"
+	exList := []struct {
+		name          string
+		localAuthErr  error
+		roamerErr     error
+		userCreateErr error
+		realErr       bool
+	}{
+		{
+			name:         "happy_path_when_locally",
+			localAuthErr: nil,
+			realErr:      false,
+		},
+		{
+			name:         "when_stor_return_real_error",
+			localAuthErr: errors.New("quququ"),
+			realErr:      true,
+		},
+		{
+			name:         "when_stor_return_no_rows_happy_path",
+			localAuthErr: sql.ErrNoRows,
+			roamerErr:    nil,
+			realErr:      false,
+		},
+		{
+			name:         "when_stor_return_no_rows_and_roamer_error",
+			localAuthErr: sql.ErrNoRows,
+			roamerErr:    errors.New("ququ"),
+			realErr:      true,
+		},
+		{
+			name:          "stor_return_no_rows_roamer_return_nil_and_create_return_err",
+			localAuthErr:  sql.ErrNoRows,
+			roamerErr:     nil,
+			userCreateErr: errors.New("ququq"),
+			realErr:       true,
+		},
+	}
+	for _, ex := range exList {
+		t.Run(ex.name, func(t *testing.T) {
+			defer current.UnsetUser()
 
-	// exList := []struct {
-	// 	name         string
-	// 	form         models.User
-	// 	returnedID   string
-	// 	retrunedPass string
-	// 	returnedErr  error
-	// 	wihError     bool
-	// }{
-	// 	{
-	// 		name:         "happy_path_correct_set",
-	// 		form:         f,
-	// 		returnedID:   "ID",
-	// 		retrunedPass: func() string { str, _ := encrypt.HashPassword("Password"); return str }(),
-	// 		returnedErr:  nil,
-	// 		wihError:     false,
-	// 	},
-	// 	{
-	// 		name:         "incorrect_password",
-	// 		form:         f,
-	// 		returnedID:   "ID",
-	// 		retrunedPass: func() string { str, _ := encrypt.HashPassword("Ququq"); return str }(),
-	// 		returnedErr:  nil,
-	// 		wihError:     true,
-	// 	},
-	// 	{
-	// 		name:         "stor_returned_err",
-	// 		form:         f,
-	// 		returnedID:   "",
-	// 		retrunedPass: "",
-	// 		returnedErr:  errors.New("stor_error"),
-	// 		wihError:     true,
-	// 	},
-	// }
-	// for _, ex := range exList {
-	// 	t.Run(ex.name, func(t *testing.T) {
-	// 		defer current.UnsetUser()
+			stor := NewMockUserAccessor(gomock.NewController(t))
+			roam := NewMockRemoteUserAccessor(gomock.NewController(t))
 
-	// 		stor := NewMockUserAccessor(gomock.NewController(t))
-	// 		item := Make(stor)
+			user := models.User{Login: "123", Password: "456"}
 
-	// 		stor.EXPECT().UserGet(context.Background(), "Login").Return(ex.returnedID, ex.retrunedPass, ex.returnedErr)
+			item := Make(stor, roam)
 
-	// 		err := item.SignIN(ex.form)
+			stor.EXPECT().UserGet(context.Background(), user.Login).Return(
+				models.User{Login: "123", ID: "IDIDID"},
+				ex.localAuthErr,
+			)
 
-	// 		if ex.wihError {
-	// 			assert.Error(t, err)
-	// 			assert.NotEqual(t, "Login", current.User.Login)
-	// 			assert.NotEqual(t, "Password", current.User.Password)
-	// 		} else {
-	// 			assert.NoError(t, err)
-	// 			assert.Equal(t, "Login", current.User.Login)
-	// 			assert.Equal(t, "Password", current.User.Password)
-	// 		}
-	// 	})
+			if ex.localAuthErr == sql.ErrNoRows {
 
-	// }
+				roaUser := models.User{
+					Login: "123", ID: "IDIDID", HashedPassword: "qwert",
+				}
 
+				roam.EXPECT().UserGet(user).Return(roaUser, ex.roamerErr)
+				if ex.roamerErr == nil {
+					stor.EXPECT().UserCreate(
+						context.Background(), roaUser,
+					).Return(ex.userCreateErr)
+				}
+			}
+
+			result := item.SignIN(user)
+
+			if ex.realErr {
+				assert.Error(t, result)
+				assert.False(t, current.UserSeted())
+			} else {
+				assert.True(t, current.UserSeted())
+				assert.Equal(t, current.User.Login, user.Login)
+				assert.Equal(t, current.User.Password, user.Password)
+				assert.Equal(t, current.User.ID, "IDIDID")
+				assert.NoError(t, result)
+			}
+		})
+	}
 }

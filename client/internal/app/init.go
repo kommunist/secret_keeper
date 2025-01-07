@@ -14,7 +14,7 @@ import (
 type Storager interface {
 	user.UserAccessor
 	secret.SecretAccessor
-	syncer.SyncerStorageAccessor
+	syncer.StorageAccessor
 }
 
 type App struct {
@@ -36,12 +36,8 @@ func Make() (App, error) {
 	}
 
 	roamer := roamer.Make(conf)
-
-	syncer := syncer.Make(conf, &stor, roamer)
-
-	userItem := user.Make(
-		&stor, conf, roamer,
-	)
+	syncer := syncer.Make(conf, &stor, &roamer)
+	userItem := user.Make(&stor, &roamer)
 	secretItem := secret.Make(&stor)
 
 	tuiItem := tui.Make(
