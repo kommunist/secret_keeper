@@ -40,9 +40,7 @@ func TestUserSet(t *testing.T) {
 
 			stor := Storage{driver: db}
 
-			exp := mock.ExpectExec("INSERT INTO users (login, password) VALUES ($1, $2)").WithArgs(
-				user.Login, user.HashedPassword,
-			)
+			exp := mock.ExpectExec(userSetSQL).WithArgs(user.Login, user.HashedPassword)
 			if ex.storErr != nil {
 				exp.WillReturnError(ex.storErr)
 			} else {
@@ -94,13 +92,11 @@ func TestUserGet(t *testing.T) {
 
 			stor := Storage{driver: db}
 
-			exp := mock.ExpectQuery("SELECT id, password FROM users WHERE login ilike $1 limit 1").WithArgs(
-				login,
-			)
+			exp := mock.ExpectQuery(userGetSQL).WithArgs(login)
 			if ex.storErr != nil {
 				exp.WillReturnError(ex.storErr)
 			} else {
-				exp.WillReturnRows(sqlmock.NewRows([]string{"id", "password"}).AddRow("id", "pass"))
+				exp.WillReturnRows(sqlmock.NewRows([]string{"id", "login", "password"}).AddRow("id", "login", "pass"))
 			}
 
 			user, err := stor.UserGet(ctx, login)
@@ -108,8 +104,9 @@ func TestUserGet(t *testing.T) {
 				assert.Error(t, err)
 			} else {
 				assert.NoError(t, err)
-				assert.Equal(t, user.ID, "id")
-				assert.Equal(t, user.HashedPassword, "pass")
+				assert.Equal(t, "id", user.ID)
+				assert.Equal(t, "login", user.Login)
+				assert.Equal(t, "pass", user.HashedPassword)
 			}
 
 			if err = mock.ExpectationsWereMet(); err != nil {

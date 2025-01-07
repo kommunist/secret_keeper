@@ -6,6 +6,7 @@ require (
 	github.com/gdamore/encoding v1.0.0 // indirect
 	github.com/gdamore/tcell/v2 v2.7.1 // indirect
 	github.com/golang/mock v1.6.0 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/gookit/color v1.5.4 // indirect
 	github.com/gookit/goutil v0.6.18 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect

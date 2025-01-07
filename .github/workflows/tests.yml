@@ -17,7 +17,7 @@ jobs:
       - name: Tests and coverage on client
         run: |
           go clean -testcache; go test client/... -coverprofile=cover.out.tmp
-          cat cover.out.tmp | grep -v 'tui'  > cover.out
+          cat cover.out.tmp | grep -v 'tui' | grep -v 'errors' | grep -v 'init.go' | grep -v 'main.go'  > cover.out
           go tool cover -func=cover.out | grep total
 
       - name: Tests on server

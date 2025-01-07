@@ -18,6 +18,7 @@ func (i *Item) Check(h http.Handler) http.Handler {
 		model, err := i.storage.UserGet(ctx, authLogin)
 		if err != nil {
 			slog.Error("error when get user from storage", "err", err)
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return
 		}
 

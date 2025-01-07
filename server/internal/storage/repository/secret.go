@@ -63,7 +63,7 @@ func (si *Storage) SecretGet(ctx context.Context, userID string, version string)
 	for rows.Next() {
 		inst := models.MakeSecret()
 
-		errScan := rows.Scan(&inst.ID, &inst.Name, &inst.Pass, &inst.Meta, &inst.Version, &inst.UserID)
+		errScan := rows.Scan(&inst.ID, &inst.Name, &inst.Pass, &inst.Meta, &inst.UserID, &inst.Version)
 		if errScan != nil {
 			slog.Error("when scan data from select by secrets", "err", errScan)
 			return nil, errScan

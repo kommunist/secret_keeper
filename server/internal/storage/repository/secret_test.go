@@ -150,8 +150,8 @@ func TestSecretGet(t *testing.T) {
 				exp.WillReturnError(ex.storErr)
 			} else {
 				exp.WillReturnRows(
-					sqlmock.NewRows([]string{"id", "name", "pass", "meta", "version"}).
-						AddRow(id, name, pass, meta, version),
+					sqlmock.NewRows([]string{"id", "name", "pass", "meta", "user_id", "version"}).
+						AddRow(id, name, pass, meta, userID, version),
 				)
 			}
 
@@ -165,6 +165,7 @@ func TestSecretGet(t *testing.T) {
 				assert.Equal(t, name, secrets[0].Name)
 				assert.Equal(t, pass, secrets[0].Pass)
 				assert.Equal(t, meta, secrets[0].Meta)
+				assert.Equal(t, userID, secrets[0].UserID)
 				assert.Equal(t, version, secrets[0].Version)
 
 			} else {
