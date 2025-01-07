@@ -12,24 +12,25 @@ import (
 
 func TestSecretsUpsert(t *testing.T) {
 	exList := []struct {
-		exName  string
-		storErr error
+		exName    string
+		beginErr  error
+		execErr   error
+		commitErr error
 	}{
 		{
-			exName:  "create_new_simple_happy_path",
-			storErr: nil,
+			exName: "create_new_simple_happy_path",
+		},
+		{
+			exName:   "create_new_when_begin_err",
+			beginErr: errors.New("qqq"),
 		},
 		{
 			exName:  "create_new_stor_return_error",
-			storErr: errors.New("some error"),
+			execErr: errors.New("some error"),
 		},
 		{
-			exName:  "update_new_simple_happy_path",
-			storErr: nil,
-		},
-		{
-			exName:  "update_new_stor_return_error",
-			storErr: errors.New("some error"),
+			exName:    "create_new_stor_commit_return_error",
+			commitErr: errors.New("some error"),
 		},
 	}
 	for _, ex := range exList {
@@ -48,23 +49,36 @@ func TestSecretsUpsert(t *testing.T) {
 
 			stor := Storage{driver: db}
 
-			mock.ExpectBegin()
+			mock.ExpectBegin().WillReturnError(ex.beginErr)
+			if ex.beginErr != nil {
+				err = stor.SecretsUpsert(ctx, []models.Secret{secret})
+				assert.Error(t, err)
+
+				return
+			}
 
 			exp := mock.ExpectExec(upsertSQL).WithArgs(
 				secret.ID, secret.Name, secret.Pass, secret.Meta, secret.UserID, secret.Version,
 			)
 
-			if ex.storErr != nil {
-				exp.WillReturnError(ex.storErr)
+			if ex.execErr != nil {
+				exp.WillReturnError(ex.execErr)
 				mock.ExpectRollback()
 			} else {
 				exp.WillReturnResult(sqlmock.NewResult(1, 1))
-				mock.ExpectCommit()
+				mock.ExpectCommit().WillReturnError(ex.commitErr)
+				if ex.commitErr != nil {
+					err = stor.SecretsUpsert(ctx, []models.Secret{secret})
+					assert.Error(t, err)
+
+					return
+				}
+
 			}
 
 			err = stor.SecretsUpsert(ctx, []models.Secret{secret})
 
-			if ex.storErr != nil {
+			if ex.execErr != nil {
 				assert.Error(t, err)
 			} else {
 				assert.NoError(t, err)
@@ -117,10 +131,11 @@ func TestSecretList(t *testing.T) {
 			if ex.storErr != nil {
 				exp.WillReturnError(ex.storErr)
 			} else {
-				exp.WillReturnRows(
+				rows :=
 					sqlmock.NewRows([]string{"id", "name", "pass", "meta", "version"}).
-						AddRow(id, name, pass, meta, version),
-				)
+						AddRow(id, name, pass, meta, version)
+
+				exp.WillReturnRows(rows)
 			}
 
 			secrets, err := stor.SecretList(ctx, userID, "0")

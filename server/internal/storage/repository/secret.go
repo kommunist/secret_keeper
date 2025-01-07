@@ -34,7 +34,7 @@ func (si *Storage) SecretUpsert(ctx context.Context, list []models.Secret) error
 
 		if err != nil {
 			slog.Error("error when insert data", "err", err)
-			tx.Rollback() // TODO: обработать ошибку отката транзакции
+			tx.Rollback() // TODO: игнорирую err
 			return err
 		}
 	}
