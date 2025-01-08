@@ -2,7 +2,6 @@ package secretget
 
 import (
 	"context"
-	"server/internal/config"
 	"server/internal/models"
 )
 
@@ -14,10 +13,9 @@ type SecretGetter interface {
 // Структура хендлера
 type Interactor struct {
 	storage SecretGetter
-	setting config.MainConfig
 }
 
 // Конструктор хендлера
-func Make(setting config.MainConfig, storage SecretGetter) Interactor {
-	return Interactor{setting: setting, storage: storage}
+func Make(storage SecretGetter) Interactor {
+	return Interactor{storage: storage}
 }

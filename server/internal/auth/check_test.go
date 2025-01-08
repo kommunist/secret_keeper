@@ -24,13 +24,13 @@ func TestCheck(t *testing.T) {
 	}{
 		{
 			name:       "happy_path",
-			hashedPass: func() string { res, _ := encrypt.HashPassword("Password"); return res }(),
+			hashedPass: func() string { res, _ := encrypt.Item{}.HashPassword("Password"); return res }(),
 			resStatus:  http.StatusOK,
 		},
 		{
 			name:       "when_stor_return_err",
 			storErr:    errors.New("ququ"),
-			hashedPass: func() string { res, _ := encrypt.HashPassword("Password"); return res }(),
+			hashedPass: func() string { res, _ := encrypt.Item{}.HashPassword("Password"); return res }(),
 			resStatus:  http.StatusInternalServerError,
 		},
 		{

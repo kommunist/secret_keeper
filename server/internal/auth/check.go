@@ -22,7 +22,9 @@ func (i *Item) Check(h http.Handler) http.Handler {
 			return
 		}
 
-		if encrypt.CheckPasswordHash(authPass, model.HashedPassword) {
+		i := encrypt.Item{}
+
+		if i.CheckPasswordHash(authPass, model.HashedPassword) {
 			ctx = context.WithValue(ctx, UserIDKey, model)
 		} else {
 			w.WriteHeader(http.StatusUnauthorized)

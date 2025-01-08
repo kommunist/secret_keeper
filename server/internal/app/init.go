@@ -33,7 +33,6 @@ type Storager interface {
 	secretset.SecretUpserter
 	secretget.SecretGetter
 	userset.UserSetter
-	userget.UserGetter
 
 	auth.UserGetter
 }
@@ -52,11 +51,11 @@ func Make() (*App, error) {
 	app := App{
 		setting:   c,
 		storage:   &rep,
-		secretset: secretset.Make(c, &rep),
-		secretget: secretget.Make(c, &rep),
+		secretset: secretset.Make(&rep),
+		secretget: secretget.Make(&rep),
 
-		userset: userset.Make(c, &rep),
-		userget: userget.Make(c, &rep),
+		userset: userset.Make(&rep),
+		userget: userget.Make(),
 
 		authCheck: auth.Make(&rep),
 	}

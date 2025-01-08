@@ -17,14 +17,6 @@ func (h *Interactor) Handler(w http.ResponseWriter, r *http.Request) {
 	}
 	user := r.Context().Value(auth.UserIDKey).(models.User)
 
-	// user, err := h.storage.UserGet(r.Context(), userID)
-
-	// if err != nil {
-	// 	slog.Error("error when get user from storage", "err", err)
-	// 	http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-	// 	return
-	// }
-
 	body, err := json.Marshal(user)
 	if err != nil {
 		slog.Error("error when convert result to json", "err", err)

@@ -5,7 +5,6 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
-	"server/internal/encrypt"
 	"server/internal/models"
 )
 
@@ -30,7 +29,7 @@ func (h *Interactor) Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// если логика обработки вырастет, то целесообразно вытащить в отдельный сервис
-	user.HashedPassword, err = encrypt.HashPassword(user.Password)
+	user.HashedPassword, err = h.hasher.HashPassword(user.Password)
 	if err != nil {
 		slog.Error("error when hash password", "err", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
