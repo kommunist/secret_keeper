@@ -32,7 +32,8 @@ func (t *Tui) SecretCreatePage(sf models.Secret) {
 func (t *Tui) SecretUpdatePage(ID string) {
 	sf, err := t.showSecretFunc(ID)
 	if err != nil {
-		// TODO: Обработать ошибку модалкой
+		// TODO: в дальнейшем нужно перепридумать, как правльно обрабатывать ошибки и показывать их в TUI.
+		// пока оставляю так
 		panic(err)
 	} else {
 		prim := t.SecretForm(sf)

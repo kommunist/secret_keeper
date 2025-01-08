@@ -27,6 +27,7 @@ func (i *Item) UserSet(f models.User) error {
 
 	// TODO в дальнейшем стоит развить систему статусов
 	// (точно обработать ситуацию, когда пользователь существует)
+	// пока оставляю в состоянии mvp
 	if resp.StatusCode != http.StatusOK {
 		logger.Logger.Info("server return not ok")
 		return errors.New("server resurn not ok")
