@@ -22,5 +22,6 @@ jobs:
 
       - name: Tests on server
         run: |
-          go clean -testcache; go test server/... -coverprofile=cover.out
+          go clean -testcache; go test server/... -coverprofile=cover.out.tmp
+          cat cover.out.tmp | grep -v 'errors' | grep -v 'init.go' | grep -v 'main.go'  > cover.out
           go tool cover -func=cover.out | grep total
