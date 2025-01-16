@@ -1,0 +1,21 @@
+package tui
+
+import (
+	"client/internal/models"
+
+	"github.com/rivo/tview"
+)
+
+func (t *Tui) Menu() {
+	menu := []menuItem{
+		{name: "My secrets", shortcut: 'a', target: func() { t.SecretList() }},
+		{name: "Add secret", shortcut: 'b', target: func() { t.SecretCreatePage(models.Secret{}) }},
+		{name: "Exit", shortcut: 'c', target: func() { t.application.Stop() }},
+	}
+
+	list := tview.NewList()
+	for _, item := range menu {
+		list.AddItem(item.name, "", item.shortcut, item.target)
+	}
+	t.Show(list)
+}
