@@ -19,8 +19,7 @@ func (i *Item) SecretGet(version string, u models.User) (list []models.Secret, e
 	q.Add("version", version)
 	req.URL.RawQuery = q.Encode()
 
-	req.Header.Set("Login", u.Login)
-	req.Header.Set("Password", u.Password)
+	req.SetBasicAuth(u.Login, u.Password)
 
 	resp, err := client.Do(req)
 	if err != nil {

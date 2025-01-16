@@ -14,8 +14,7 @@ func (i *Item) UserGet(f models.User) (user models.User, err error) {
 		logger.Logger.Error("error when prepare get user request to server", "err", err)
 		return models.User{}, err
 	}
-	req.Header.Set("Login", f.Login)
-	req.Header.Set("Password", f.Password)
+	req.SetBasicAuth(f.Login, f.Password)
 
 	resp, err := client.Do(req)
 	if err != nil {

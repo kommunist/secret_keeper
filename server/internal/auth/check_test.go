@@ -53,8 +53,7 @@ func TestCheck(t *testing.T) {
 			stor.EXPECT().UserGet(ctx, "LoginOfUser").Return(model, ex.storErr)
 
 			request := httptest.NewRequest(http.MethodGet, "/any", nil).WithContext(ctx)
-			request.Header.Set("Login", "LoginOfUser")
-			request.Header.Set("Password", "Password")
+			request.SetBasicAuth("LoginOfUser", "Password")
 
 			w := httptest.NewRecorder()
 			handlerToTest.ServeHTTP(w, request)

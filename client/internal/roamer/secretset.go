@@ -22,8 +22,7 @@ func (i *Item) SecretSet(list []models.Secret, u models.User) error {
 		logger.Logger.Error("error when prepare post secrets request to server", "err", err)
 		return err
 	}
-	req.Header.Set("Login", u.Login)
-	req.Header.Set("Password", u.Password)
+	req.SetBasicAuth(u.Login, u.Password)
 
 	resp, err := client.Do(req)
 	if err != nil {

@@ -12,10 +12,14 @@ func (i *Item) Check(h http.Handler) http.Handler {
 	authFn := func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
-		authLogin := r.Header.Get("Login")
-		authPass := r.Header.Get("Password")
+		login, password, ok := r.BasicAuth()
+		if !ok {
+			slog.Info("Unauthorized request detected")
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
 
-		model, err := i.storage.UserGet(ctx, authLogin)
+		model, err := i.storage.UserGet(ctx, login)
 		if err != nil {
 			slog.Error("error when get user from storage", "err", err)
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
@@ -24,7 +28,7 @@ func (i *Item) Check(h http.Handler) http.Handler {
 
 		i := encrypt.Item{}
 
-		if ok := i.CheckPasswordHash(authPass, model.HashedPassword); !ok {
+		if ok := i.CheckPasswordHash(password, model.HashedPassword); !ok {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
