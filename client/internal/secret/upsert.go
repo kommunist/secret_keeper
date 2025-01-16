@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// Создание секрета
 func (i *Item) Upsert(f models.Secret, u models.User) error {
 
 	f.Version = i.verGet.Get()

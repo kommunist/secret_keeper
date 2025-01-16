@@ -6,6 +6,7 @@ import (
 	"context"
 )
 
+// Просмотр конкретного секрета
 func (i *Item) Show(ID string) (models.Secret, error) {
 	item, err := i.storage.SecretShow(context.Background(), ID)
 	if err != nil {

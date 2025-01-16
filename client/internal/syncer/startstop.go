@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+// Основная идея синкера в том, что раз в несколько секунд синкер делает два запроса
+// на сервер: для получения и отправки секретов.
+
+// Запуск синкера
 func (i *Item) Start() {
 	logger.Logger.Info("Syncer started")
 
@@ -24,6 +28,7 @@ func (i *Item) Start() {
 	}()
 }
 
+// Останов синкера
 func (i *Item) Stop() {
 	logger.Logger.Info("Stop syncer")
 

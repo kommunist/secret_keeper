@@ -1,5 +1,7 @@
 package models
 
+// Модели пользвателя и секрета
+
 type User struct {
 	ID             string `json:"id"`
 	Login          string `json:"login"`

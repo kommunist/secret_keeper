@@ -8,6 +8,7 @@ import (
 	"server/internal/models"
 )
 
+// Регистрация пользваотеля
 func (h *Interactor) Handler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Handle request of userset")
 

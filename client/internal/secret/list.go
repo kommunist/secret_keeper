@@ -6,6 +6,7 @@ import (
 	"context"
 )
 
+// Получение локальных секретов переданного пользователя
 func (i *Item) List(u models.User) ([]models.Secret, error) {
 	list, err := i.storage.SecretList(
 		context.Background(), u.ID, "0",

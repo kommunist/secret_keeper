@@ -8,6 +8,7 @@ import (
 	"net/http"
 )
 
+// Метод для похода на сервер за секретами
 func (i *Item) SecretGet(version string, u models.User) (list []models.Secret, err error) {
 	req, err := http.NewRequest("GET", i.settings.ServerURL+"/api/secrets", nil)
 	if err != nil {

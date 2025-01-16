@@ -9,6 +9,7 @@ import (
 	"net/http"
 )
 
+// Метод похода на сервер и создания(регистрации) пользователя
 func (i *Item) UserSet(f models.User) error {
 	postBody, err := json.Marshal(f)
 

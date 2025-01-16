@@ -5,6 +5,7 @@ import (
 	"client/internal/models"
 )
 
+// Регистрация пользователя. Всегда только он-лайн
 func (i *Item) SignUP(u models.User) error {
 	err := i.roamer.UserSet(u)
 	if err != nil {

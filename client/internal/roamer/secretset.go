@@ -9,6 +9,7 @@ import (
 	"net/http"
 )
 
+// Метод для похода на сервер и отправки секретов
 func (i *Item) SecretSet(list []models.Secret, u models.User) error {
 	postBody, err := json.Marshal(list)
 	if err != nil {

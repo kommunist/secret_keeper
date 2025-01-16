@@ -11,6 +11,7 @@ const (
 	userGetSQL = "SELECT id, login, password FROM users WHERE login ilike $1 limit 1"
 )
 
+// Добавление пользователя в базу
 func (si *Storage) UserSet(ctx context.Context, user models.User) error {
 	_, err := si.driver.ExecContext(ctx, userSetSQL, user.Login, user.HashedPassword)
 	if err != nil {
@@ -20,6 +21,7 @@ func (si *Storage) UserSet(ctx context.Context, user models.User) error {
 	return nil
 }
 
+// Получение пользователя из базы
 func (si *Storage) UserGet(ctx context.Context, login string) (user models.User, err error) {
 	user = models.User{}
 	row := si.driver.QueryRowContext(ctx, userGetSQL, login)

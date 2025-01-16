@@ -8,6 +8,7 @@ import (
 	"server/internal/models"
 )
 
+// Берет пользователя, если авторизован, и отдает клиенту данные
 func (h *Interactor) Handler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Handle request of userget")
 

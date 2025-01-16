@@ -7,6 +7,7 @@ import (
 	"database/sql"
 )
 
+// Метод, разруливающий аутентификацию. Если локальная аутентификация не удалась, то идем на сервер
 func (i *Item) SignIN(login string, password string) error {
 
 	u, err := i.storage.UserGet(context.Background(), login)

@@ -8,6 +8,7 @@ import (
 	"net/http"
 )
 
+// Метод для похода на сервер и получения данных о пользователе
 func (i *Item) UserGet(f models.User) (user models.User, err error) {
 	req, err := http.NewRequest("GET", i.settings.ServerURL+"/api/users", nil)
 	if err != nil {

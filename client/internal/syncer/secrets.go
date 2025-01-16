@@ -16,18 +16,21 @@ func (i *Item) syncSecrets() {
 		return
 	}
 
+	// сначала отправили локальные секреты
 	err = i.sendLocalSecrets(lastSynced)
 	if err != nil {
 		logger.Logger.Error("syncSecrets: when send local secrets to server", "err", err)
 		return
 	}
 
+	// теперь забрали секреты с сервера
 	err = i.getServerSecrets(lastSynced)
 	if err != nil {
 		logger.Logger.Error("syncSecrets: when get server secrets", "err", err)
 		return
 	}
 
+	// сохранили точку синхронизации
 	err = i.saveSyncEvent()
 	if err != nil {
 		logger.Logger.Error("syncSecrets: when save sync event", "err", err)

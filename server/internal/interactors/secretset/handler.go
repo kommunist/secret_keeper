@@ -9,7 +9,6 @@ import (
 )
 
 // Получает секреты от клиентов и сохраняет их в базу
-
 func (h *Interactor) Handler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Handle request of secretset")
 
