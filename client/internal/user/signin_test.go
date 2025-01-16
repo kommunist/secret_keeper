@@ -57,7 +57,9 @@ func TestCall(t *testing.T) {
 			login := "123"
 			password := "456"
 
-			item := Make(stor, roam)
+			var expectedUser models.User
+
+			item := Make(stor, roam, func(f models.User) { expectedUser = f })
 
 			stor.EXPECT().UserGet(context.Background(), login).Return(
 				models.User{Login: login, ID: "IDIDID"},
@@ -80,14 +82,14 @@ func TestCall(t *testing.T) {
 				}
 			}
 
-			u, err := item.SignIN(login, password)
+			err := item.SignIN(login, password)
 
 			if ex.realErr {
 				assert.Error(t, err)
 			} else {
-				assert.Equal(t, u.Login, login)
-				assert.Equal(t, u.Password, password)
-				assert.Equal(t, u.ID, "IDIDID")
+				assert.Equal(t, expectedUser.Login, login)
+				assert.Equal(t, expectedUser.Password, password)
+				assert.Equal(t, expectedUser.ID, "IDIDID")
 				assert.NoError(t, err)
 			}
 		})

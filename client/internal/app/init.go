@@ -36,12 +36,11 @@ func Make() (*App, error) {
 		logger.Logger.Error("Error when make storage", "err", err)
 		return nil, err
 	}
+	app := &App{storage: stor}
 
 	roamer := roamer.Make(conf)
-	userItem := user.Make(stor, &roamer)
+	userItem := user.Make(stor, &roamer, app.setCurrent)
 	secretItem := secret.Make(stor)
-
-	app := &App{storage: stor}
 
 	syncer := syncer.Make(
 		conf, stor, &roamer,
@@ -55,7 +54,6 @@ func Make() (*App, error) {
 		secretItem.List,   // метод для получения списка секретов
 		secretItem.Show,   // метод для получения одного секрета
 
-		app.setCurrent, // функция задания текущего юзера
 		app.getCurrent, // функция получения текущего юзера
 	)
 

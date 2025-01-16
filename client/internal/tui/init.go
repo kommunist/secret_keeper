@@ -8,13 +8,12 @@ import (
 )
 
 type signUPFuncType func(f models.User) error
-type signINFuncType func(login string, password string) (models.User, error)
+type signINFuncType func(login string, password string) error
 
 type secretCreateFunc func(f models.Secret, u models.User) error
 type secretListFunc func(u models.User) ([]models.Secret, error)
 type secretShowFunc func(ID string) (models.Secret, error)
 
-type currentSet func(models.User)
 type currentGet func() models.User
 
 type Tui struct {
@@ -29,7 +28,6 @@ type Tui struct {
 	listSecretFunc   secretListFunc
 	showSecretFunc   secretShowFunc
 
-	currentSetFunc currentSet
 	currentGetFunc currentGet
 }
 
@@ -40,7 +38,6 @@ func Make(
 	listSecretFunc secretListFunc,
 	showSecretFunc secretShowFunc,
 
-	currentSetFunc currentSet,
 	currentGetFunc currentGet,
 ) Tui {
 	application := tview.NewApplication()
@@ -55,7 +52,6 @@ func Make(
 		listSecretFunc:   listSecretFunc,
 		showSecretFunc:   showSecretFunc,
 
-		currentSetFunc: currentSetFunc,
 		currentGetFunc: currentGetFunc,
 	}
 }

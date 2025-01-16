@@ -7,7 +7,7 @@ import (
 	"database/sql"
 )
 
-func (i *Item) SignIN(login string, password string) (models.User, error) {
+func (i *Item) SignIN(login string, password string) error {
 
 	u, err := i.storage.UserGet(context.Background(), login)
 	if err != nil {
@@ -15,23 +15,26 @@ func (i *Item) SignIN(login string, password string) (models.User, error) {
 			logger.Logger.Info("try to athentificate user by server")
 			u, err := i.roamer.UserGet(models.User{Login: login, Password: password})
 			if err != nil {
-				return models.User{}, err
+				return err
 			}
 
 			err = i.storage.UserCreate(context.Background(), u)
 			if err != nil {
 				logger.Logger.Error("when create user locally", "err", err)
-				return models.User{}, err
+				return err
 			}
 			u.Password = password
 
-			return u, nil
+			i.currentSetFunc(u)
+
+			return nil
 		}
-		return models.User{}, err
+		return err
 	}
 
 	logger.Logger.Info("user athentificated locally")
 	u.Password = password
+	i.currentSetFunc(u)
 
-	return u, nil
+	return nil
 }

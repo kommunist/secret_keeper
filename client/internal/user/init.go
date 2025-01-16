@@ -15,13 +15,17 @@ type RemoteUserAccessor interface {
 	UserGet(f models.User) (user models.User, err error)
 }
 
+type currentSet func(models.User)
+
 type Item struct {
 	storage UserAccessor
 	roamer  RemoteUserAccessor
+
+	currentSetFunc currentSet
 }
 
-func Make(stor UserAccessor, roamer RemoteUserAccessor) Item {
+func Make(stor UserAccessor, roamer RemoteUserAccessor, currecurrentSetFunc currentSet) Item {
 	return Item{
-		storage: stor, roamer: roamer,
+		storage: stor, roamer: roamer, currentSetFunc: currecurrentSetFunc,
 	}
 }

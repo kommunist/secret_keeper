@@ -30,7 +30,7 @@ func TestSignUP(t *testing.T) {
 
 			user := models.User{Login: "123"}
 
-			item := Make(stor, roam)
+			item := Make(stor, roam, func(f models.User) {})
 
 			roam.EXPECT().UserSet(user).Return(ex.roamerErr)
 
