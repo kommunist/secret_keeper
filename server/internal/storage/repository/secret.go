@@ -19,7 +19,7 @@ const (
 	`
 
 	getSQL = `
-		SELECT id, name, pass, meta, version, user_id from secrets where user_id = $1 and version > $2
+		SELECT id, name, pass, meta, user_id, version from secrets where user_id = $1 and version > $2
 	`
 )
 
