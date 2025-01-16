@@ -1,6 +1,6 @@
 module client
 
-go 1.22.0
+go 1.23
 
 require (
 	github.com/gdamore/encoding v1.0.0 // indirect
