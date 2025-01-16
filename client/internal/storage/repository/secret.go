@@ -7,7 +7,8 @@ import (
 	"log/slog"
 )
 
-const upsertSQL = `
+const (
+	upsertSQL = `
 		INSERT INTO secrets (id, name, pass, meta, user_id, version)
 		VALUES ($1, $2, $3, $4, $5, $6)
 		ON CONFLICT ( id ) DO UPDATE SET
@@ -15,14 +16,17 @@ const upsertSQL = `
 		pass = excluded.pass,
 		meta = excluded.meta,
 		version = excluded.version
-`
+	`
 
-const listSQL = `
-	SELECT id, name, pass, meta, version 
-	FROM secrets 
-	WHERE user_id = $1 AND version > $2
-`
-const showSQL = "SELECT id, name, pass, meta, version from secrets where ID = $1"
+	listSQL = `
+		SELECT id, name, pass, meta, version 
+		FROM secrets 
+		WHERE user_id = $1 AND version > $2
+	`
+	showSQL = `
+		SELECT id, name, pass, meta, version from secrets where ID = $1
+	`
+)
 
 // Метод, создающий/обновляющий секрет в базе
 func (si *Storage) SecretsUpsert(ctx context.Context, list []models.Secret) error {

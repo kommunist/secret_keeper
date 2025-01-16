@@ -6,8 +6,10 @@ import (
 	"server/internal/models"
 )
 
-const userSetSQL = "INSERT INTO users (login, password) VALUES ($1, $2)"
-const userGetSQL = "SELECT id, login, password FROM users WHERE login ilike $1 limit 1"
+const (
+	userSetSQL = "INSERT INTO users (login, password) VALUES ($1, $2)"
+	userGetSQL = "SELECT id, login, password FROM users WHERE login ilike $1 limit 1"
+)
 
 func (si *Storage) UserSet(ctx context.Context, user models.User) error {
 	_, err := si.driver.ExecContext(ctx, userSetSQL, user.Login, user.HashedPassword)

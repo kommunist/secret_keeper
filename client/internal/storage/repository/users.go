@@ -6,8 +6,10 @@ import (
 	"context"
 )
 
-const userCreateSQL = "INSERT INTO users (id, login, password) VALUES ($1, $2, $3)"
-const userGetSQL = "SELECT id, login, password FROM users WHERE login ilike $1 limit 1"
+const (
+	userCreateSQL = "INSERT INTO users (id, login, password) VALUES ($1, $2, $3)"
+	userGetSQL    = "SELECT id, login, password FROM users WHERE login ilike $1 limit 1"
+)
 
 func (si *Storage) UserCreate(ctx context.Context, u models.User) error {
 	_, err := si.driver.ExecContext(ctx, userCreateSQL, u.ID, u.Login, u.HashedPassword)

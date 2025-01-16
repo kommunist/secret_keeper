@@ -6,7 +6,8 @@ import (
 	"server/internal/models"
 )
 
-const upsertSQL = `
+const (
+	upsertSQL = `
 		INSERT INTO secrets (id, name, pass, meta, user_id, version)
 		VALUES ($1, $2, $3, $4, $5, $6)
 		ON CONFLICT ( id ) DO UPDATE SET
@@ -15,9 +16,12 @@ const upsertSQL = `
 		meta = excluded.meta,
 		version = excluded.version
 		WHERE excluded.version > secrets.version
-`
+	`
 
-const getSQL = "SELECT id, name, pass, meta, version, user_id from secrets where user_id = $1 and version > $2"
+	getSQL = `
+		SELECT id, name, pass, meta, version, user_id from secrets where user_id = $1 and version > $2
+	`
+)
 
 // Метод, создающий/обновляющий секрет в базе
 func (si *Storage) SecretUpsert(ctx context.Context, list []models.Secret) error {
