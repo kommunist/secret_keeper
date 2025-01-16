@@ -7,6 +7,7 @@ import (
 	"syscall"
 )
 
+// Запуск приложения
 func (a *App) Start() error {
 	a.listenInterrupt()
 
@@ -21,17 +22,20 @@ func (a *App) Start() error {
 	return nil
 }
 
+// Остановка приложения
 func (a *App) stop() {
 	a.syncer.Stop()
 	a.tui.Stop()
 }
 
+// Обработчик прерываний
 func (a *App) listenInterrupt() {
 	sigint := make(chan os.Signal, 3)
 	signal.Notify(sigint, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
 	go a.waitInterrupt(sigint)
 }
 
+// Слушатель прерываний
 func (a *App) waitInterrupt(sigint chan os.Signal) {
 	<-sigint
 	a.stop()

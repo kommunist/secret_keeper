@@ -44,7 +44,10 @@ func (si *Storage) SecretsUpsert(ctx context.Context, list []models.Secret) erro
 		if err != nil {
 			logger.Logger.Info("SecretsUpsert: list", "secrets", secret)
 			logger.Logger.Error("SecretsUpsert: when exec upsert query", "err", err)
-			tx.Rollback() // TODO игнорирую error
+			rollerr := tx.Rollback()
+			if rollerr != nil {
+				logger.Logger.Error("SecretsUpsert: error when rollback transaction", "err", err)
+			}
 			return err
 		}
 	}
@@ -52,7 +55,10 @@ func (si *Storage) SecretsUpsert(ctx context.Context, list []models.Secret) erro
 	err = tx.Commit()
 	if err != nil {
 		logger.Logger.Error("SecretsUpsert: when commit transaction on upsert secrets")
-		tx.Rollback() // TODO игнорирую error
+		rollerr := tx.Rollback()
+		if rollerr != nil {
+			logger.Logger.Error("SecretsUpsert: error when rollback transaction", "err", err)
+		}
 		return err
 	}
 

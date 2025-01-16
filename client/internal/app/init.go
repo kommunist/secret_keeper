@@ -12,12 +12,14 @@ import (
 	"client/internal/user"
 )
 
+// Собирательный интерфейс харнилища
 type Storager interface {
 	user.UserAccessor
 	secret.SecretAccessor
 	syncer.StorageAccessor
 }
 
+// Основная структура приложения
 type App struct {
 	tui tui.Tui // Морда в терминале
 
@@ -27,6 +29,7 @@ type App struct {
 	current models.User
 }
 
+// Конструктор основной структуры
 func Make() (*App, error) {
 	conf := config.Make()
 

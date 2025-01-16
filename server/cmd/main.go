@@ -20,5 +20,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	a.Start()
+	err = a.Start()
+	if err != nil {
+		slog.Error("Error when start app", "err", err)
+		os.Exit(1)
+	}
 }

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	gomock "github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestStartStop(t *testing.T) {
@@ -24,7 +25,8 @@ func TestStartStop(t *testing.T) {
 
 		go func() { time.Sleep(3 * time.Second); h.stop() }()
 
-		h.Start()
+		err := h.Start()
+		assert.NoError(t, err)
 
 	})
 
