@@ -17,7 +17,7 @@ func TestStartStop(t *testing.T) {
 		stor := NewMockStorager(ctrl)
 
 		h := App{
-			setting: config.MainConfig{},
+			setting: &config.MainConfig{},
 			storage: stor,
 		}
 		h.Server = http.Server{Addr: "localhost:1024", Handler: h.initRouter()}

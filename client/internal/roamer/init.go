@@ -8,10 +8,10 @@ import (
 var client = &http.Client{}
 
 type Item struct {
-	settings config.MainConfig
+	settings *config.MainConfig
 }
 
-func Make(settings config.MainConfig) Item {
+func Make(settings *config.MainConfig) Item {
 	return Item{
 		settings: settings,
 	}

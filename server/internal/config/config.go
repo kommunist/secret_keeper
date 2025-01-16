@@ -13,7 +13,7 @@ type MainConfig struct {
 	CertKeyPath string
 }
 
-func Make() MainConfig {
+func Make() *MainConfig {
 	config := MainConfig{
 		DatabaseURI: "",
 		ServerURL:   "",
@@ -21,7 +21,7 @@ func Make() MainConfig {
 		CertKeyPath: "certs/MyKey.key",
 	}
 
-	return config
+	return &config
 }
 
 func (c *MainConfig) Init() {

@@ -11,13 +11,13 @@ type MainConfig struct {
 	ServerURL   string
 }
 
-func Make() MainConfig {
+func Make() *MainConfig {
 	config := MainConfig{
 		DatabaseURI: "",
 		ServerURL:   "localhost:1025",
 	}
 
-	return config
+	return &config
 }
 
 func (c *MainConfig) Init() {

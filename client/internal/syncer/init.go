@@ -23,7 +23,7 @@ type RoamerAccessor interface {
 type verGetter interface{ Get() string }
 
 type Item struct {
-	settings config.MainConfig
+	settings *config.MainConfig
 	storage  StorageAccessor
 	roamer   RoamerAccessor
 
@@ -31,7 +31,7 @@ type Item struct {
 	verGet verGetter
 }
 
-func Make(settings config.MainConfig, storage StorageAccessor, roamer RoamerAccessor) Item {
+func Make(settings *config.MainConfig, storage StorageAccessor, roamer RoamerAccessor) Item {
 	return Item{
 		settings: settings,
 		storage:  storage,

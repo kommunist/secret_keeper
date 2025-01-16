@@ -14,7 +14,7 @@ import (
 
 // Основная структура
 type App struct {
-	setting config.MainConfig
+	setting *config.MainConfig
 	storage Storager
 
 	secretset secretset.Interactor
