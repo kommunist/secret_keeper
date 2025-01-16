@@ -16,15 +16,16 @@ func (si *Storage) GetLastSyncEventVersion(ctx context.Context, kind string) (ve
 	row := si.driver.QueryRow(getLastSyncEventQuery, kind)
 	err = row.Scan(&version)
 
-	if err == nil {
-		return version, nil
-	}
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return "0", nil
+		}
 
-	if err == sql.ErrNoRows {
-		return "0", nil
-	} else {
 		return "", err
 	}
+
+	return version, nil
+
 }
 
 func (si *Storage) SaveSyncEvent(ctx context.Context, kind string, version string) error {

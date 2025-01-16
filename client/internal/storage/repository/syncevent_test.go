@@ -44,17 +44,18 @@ func TestGetLastSyncEventVersion(t *testing.T) {
 			}
 
 			result, err := stor.GetLastSyncEventVersion(context.Background(), "secret")
-
-			if ex.storErr == nil {
-				assert.Equal(t, "12345", result)
-				assert.NoError(t, err)
-			} else if ex.storErr == sql.ErrNoRows {
-				assert.Equal(t, "0", result)
-				assert.NoError(t, err)
-			} else {
-				assert.Error(t, err)
+			if ex.storErr != nil {
+				if ex.storErr == sql.ErrNoRows {
+					assert.Equal(t, "0", result)
+					assert.NoError(t, err)
+				} else {
+					assert.Error(t, err)
+				}
+				return
 			}
 
+			assert.Equal(t, "12345", result)
+			assert.NoError(t, err)
 		})
 	}
 }
