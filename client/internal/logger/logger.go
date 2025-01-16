@@ -5,13 +5,13 @@ import (
 	"os"
 )
 
-const logFile = "logs/client.log"
+const logFile = "client.log"
 
 var Logger = Make()
 
 // Данный логгер переопределяет основной вывод в файл, так как терминал занят отображением
 func Make() *slog.Logger {
-	file, err := os.OpenFile(logFile, os.O_RDWR|os.O_APPEND, 0644)
+	file, err := os.OpenFile(logFile, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0644)
 	if err != nil {
 		panic(err) // Кажется, паниковать в данном случае допустимо. Тем более логгер глобальный
 	}

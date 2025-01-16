@@ -19,7 +19,7 @@ func (si *Storage) UserSet(ctx context.Context, user models.User) error {
 }
 
 func (si *Storage) UserGet(ctx context.Context, login string) (user models.User, err error) {
-	user = models.MakeUser()
+	user = models.User{}
 	row := si.driver.QueryRowContext(ctx, userGetSQL, login)
 	err = row.Scan(&user.ID, &user.Login, &user.HashedPassword)
 	if err != nil {

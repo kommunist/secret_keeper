@@ -68,7 +68,7 @@ func (si *Storage) SecretList(ctx context.Context, userID string, lastSynced str
 	result := make([]models.Secret, 0)
 
 	for rows.Next() {
-		inst := models.MakeSecret()
+		inst := models.Secret{}
 
 		errScan := rows.Scan(&inst.ID, &inst.Name, &inst.Pass, &inst.Meta, &inst.Version)
 		if errScan != nil {

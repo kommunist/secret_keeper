@@ -26,7 +26,7 @@ func TestUserSet(t *testing.T) {
 	}
 	for _, ex := range exList {
 		t.Run(ex.name, func(t *testing.T) {
-			user := models.MakeUser()
+			user := models.User{}
 
 			user.Login = "Login"
 			user.HashedPassword = "Password"

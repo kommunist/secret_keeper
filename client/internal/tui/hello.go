@@ -19,8 +19,8 @@ func (t *Tui) Hello() {
 	} else {
 
 		menu := []menuItem{
-			{name: "Log IN", shortcut: 'a', target: func() { t.SignInPage(models.MakeUser()) }},
-			{name: "Sign UP", shortcut: 'b', target: func() { t.SignUPPage(models.MakeUser()) }},
+			{name: "Log IN", shortcut: 'a', target: func() { t.SignInPage(models.User{}) }},
+			{name: "Sign UP", shortcut: 'b', target: func() { t.SignUPPage(models.User{}) }},
 			{name: "Exit", shortcut: 'e', target: func() { t.application.Stop() }},
 		}
 

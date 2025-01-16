@@ -40,7 +40,7 @@ func TestUpsert(t *testing.T) {
 			item := Make(stor)
 			item.verGet = &MockVer{}
 
-			secret := models.MakeSecret()
+			secret := models.Secret{}
 			secret.ID = "ID"
 			secret.Meta = "meta"
 			secret.Name = "name"
