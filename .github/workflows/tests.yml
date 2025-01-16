@@ -9,7 +9,7 @@ on:
 jobs:
   client_tests_and_cover:
     runs-on: ubuntu-latest
-    container: golang:1.22
+    container: golang:1.23
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -22,7 +22,7 @@ jobs:
 
   server_tests_and_cover:
     runs-on: ubuntu-latest
-    container: golang:1.22
+    container: golang:1.23
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
