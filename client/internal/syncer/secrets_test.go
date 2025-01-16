@@ -2,7 +2,6 @@ package syncer
 
 import (
 	"client/internal/config"
-	"client/internal/current"
 	"client/internal/models"
 	"context"
 	"errors"
@@ -69,19 +68,21 @@ func TestSyncSecrets(t *testing.T) {
 
 	for _, ex := range exList {
 		t.Run(ex.name, func(t *testing.T) {
-			defer current.UnsetUser()
-
-			if ex.userSeted {
-				cu := models.User{ID: "123", Login: "login", Password: "pass"}
-				current.SetUser(cu)
-			}
-
 			c := config.MainConfig{}
 
 			stor := NewMockStorageAccessor(gomock.NewController(t))
 			roamer := NewMockRoamerAccessor(gomock.NewController(t))
 
-			item := Make(&c, stor, roamer)
+			cu := models.User{ID: "123", Login: "login", Password: "pass"}
+			fcu := func() models.User {
+				if ex.userSeted {
+					return cu
+				} else {
+					return models.User{}
+				}
+			}
+			item := Make(&c, stor, roamer, fcu)
+
 			item.verGet = &MockVer{}
 
 			if !ex.userSeted {
@@ -99,14 +100,14 @@ func TestSyncSecrets(t *testing.T) {
 			// --sendLocalSecrets--
 
 			secrets := []models.Secret{{Name: "name", Pass: "pass", Meta: "meta", Version: "version"}}
-			stor.EXPECT().SecretList(context.Background(), current.User.ID, "0").Return(secrets, ex.secretListErr)
+			stor.EXPECT().SecretList(context.Background(), cu.ID, "0").Return(secrets, ex.secretListErr)
 
 			if ex.secretListErr != nil {
 				item.syncSecrets()
 				return
 			}
 
-			roamer.EXPECT().SecretSet(secrets).Return(ex.roamerSecretSetErr)
+			roamer.EXPECT().SecretSet(secrets, cu).Return(ex.roamerSecretSetErr)
 			if ex.roamerSecretSetErr != nil {
 				item.syncSecrets()
 				return
@@ -117,7 +118,7 @@ func TestSyncSecrets(t *testing.T) {
 			// --getServerSecrets--
 
 			secrets = []models.Secret{{Name: "name", Pass: "pass", Meta: "meta", Version: "version"}}
-			roamer.EXPECT().SecretGet("0").Return(secrets, ex.roamerSecretGetErr)
+			roamer.EXPECT().SecretGet("0", cu).Return(secrets, ex.roamerSecretGetErr)
 			if ex.roamerSecretGetErr != nil {
 				item.syncSecrets()
 				return

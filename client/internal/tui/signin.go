@@ -24,10 +24,11 @@ func (t *Tui) SignInPage(sif models.User) {
 }
 
 func (t *Tui) SignInSaveButton(sif models.User) {
-	err := t.signinFunc(sif)
+	user, err := t.signinFunc(sif.Login, sif.Password)
 	if err != nil {
 		t.ErrorModal(err.Error(), t.SignInForm(sif))
 	} else {
+		t.currentSetFunc(user)
 		t.Menu()
 	}
 }

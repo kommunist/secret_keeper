@@ -6,8 +6,6 @@ import (
 	"context"
 )
 
-type ShowFunc func(ID string) (models.Secret, error)
-
 func (i *Item) Show(ID string) (models.Secret, error) {
 	item, err := i.storage.SecretShow(context.Background(), ID)
 	if err != nil {

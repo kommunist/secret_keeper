@@ -2,32 +2,46 @@ package tui
 
 import (
 	"client/internal/logger"
-	"client/internal/secret"
-	"client/internal/user"
+	"client/internal/models"
 
 	"github.com/rivo/tview"
 )
+
+type signUPFuncType func(f models.User) error
+type signINFuncType func(login string, password string) (models.User, error)
+
+type secretCreateFunc func(f models.Secret, u models.User) error
+type secretListFunc func(u models.User) ([]models.Secret, error)
+type secretShowFunc func(ID string) (models.Secret, error)
+
+type currentSet func(models.User)
+type currentGet func() models.User
 
 type Tui struct {
 	application *tview.Application
 
 	box tview.Primitive
 
-	signupFunc user.CallFunc
-	signinFunc user.CallFunc
+	signupFunc signUPFuncType
+	signinFunc signINFuncType
 
-	// functions for secret
-	createSecretFunc secret.CallFunc
-	listSecretFunc   secret.ListFunc
-	showSecretFunc   secret.ShowFunc
+	createSecretFunc secretCreateFunc
+	listSecretFunc   secretListFunc
+	showSecretFunc   secretShowFunc
+
+	currentSetFunc currentSet
+	currentGetFunc currentGet
 }
 
 func Make(
-	signupFunc user.CallFunc,
-	signinFunc user.CallFunc,
-	createSecretFunc secret.CallFunc,
-	listSecretFunc secret.ListFunc,
-	showSecretFunc secret.ShowFunc,
+	signupFunc signUPFuncType,
+	signinFunc signINFuncType,
+	createSecretFunc secretCreateFunc,
+	listSecretFunc secretListFunc,
+	showSecretFunc secretShowFunc,
+
+	currentSetFunc currentSet,
+	currentGetFunc currentGet,
 ) Tui {
 	application := tview.NewApplication()
 	box := tview.NewBox().SetBorder(true).SetTitle("secret_keeper_client")
@@ -40,6 +54,9 @@ func Make(
 		createSecretFunc: createSecretFunc,
 		listSecretFunc:   listSecretFunc,
 		showSecretFunc:   showSecretFunc,
+
+		currentSetFunc: currentSetFunc,
+		currentGetFunc: currentGetFunc,
 	}
 }
 

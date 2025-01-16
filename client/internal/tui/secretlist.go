@@ -11,7 +11,7 @@ import (
 
 // Список секретов текущего пользователя
 func (t *Tui) SecretList() {
-	items, err := t.listSecretFunc()
+	items, err := t.listSecretFunc(t.currentGetFunc())
 	if err != nil {
 		logger.Logger.Error("Error when get list of secrets", "err", err)
 		t.Menu()

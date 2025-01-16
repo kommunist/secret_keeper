@@ -1,7 +1,6 @@
 package tui
 
 import (
-	"client/internal/current"
 	"client/internal/models"
 
 	"github.com/rivo/tview"
@@ -14,7 +13,7 @@ type menuItem struct {
 }
 
 func (t *Tui) Hello() {
-	if current.UserSeted() {
+	if ok := t.currentGetFunc().ID == ""; !ok {
 		t.Menu()
 	} else {
 

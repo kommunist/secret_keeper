@@ -1,7 +1,6 @@
 package roamer
 
 import (
-	"client/internal/current"
 	"client/internal/logger"
 	"client/internal/models"
 	"encoding/json"
@@ -9,7 +8,7 @@ import (
 	"net/http"
 )
 
-func (i *Item) SecretGet(version string) (list []models.Secret, err error) {
+func (i *Item) SecretGet(version string, u models.User) (list []models.Secret, err error) {
 	req, err := http.NewRequest("GET", i.settings.ServerURL+"/api/secrets", nil)
 	if err != nil {
 		logger.Logger.Error("error when prepare get secrets request to server", "err", err)
@@ -20,8 +19,8 @@ func (i *Item) SecretGet(version string) (list []models.Secret, err error) {
 	q.Add("version", version)
 	req.URL.RawQuery = q.Encode()
 
-	req.Header.Set("Login", current.User.Login)
-	req.Header.Set("Password", current.User.Password)
+	req.Header.Set("Login", u.Login)
+	req.Header.Set("Password", u.Password)
 
 	resp, err := client.Do(req)
 	if err != nil {

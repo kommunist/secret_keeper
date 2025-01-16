@@ -5,8 +5,6 @@ import (
 	"context"
 )
 
-type CallFunc func(f models.User) error
-
 type UserAccessor interface {
 	UserGet(ctx context.Context, login string) (user models.User, err error)
 	UserCreate(ctx context.Context, u models.User) error

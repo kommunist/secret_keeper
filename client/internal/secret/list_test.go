@@ -1,7 +1,6 @@
 package secret
 
 import (
-	"client/internal/current"
 	"client/internal/models"
 	"context"
 	"errors"
@@ -42,14 +41,13 @@ func TestList(t *testing.T) {
 
 			userID := "userID"
 
-			current.SetUser(models.User{Login: "login", Password: "pass", ID: userID})
-			defer current.UnsetUser()
-
 			stor.EXPECT().SecretList(
 				context.Background(), userID, "0",
 			).Return([]models.Secret{ex.model}, ex.storErr)
 
-			result, err := item.List()
+			result, err := item.List(
+				models.User{Login: "login", Password: "pass", ID: userID},
+			)
 
 			if ex.storErr == nil {
 				assert.NoError(t, err)

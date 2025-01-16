@@ -6,8 +6,6 @@ import (
 	"context"
 )
 
-type CallFunc func(s models.Secret) error
-
 type SecretAccessor interface {
 	SecretsUpsert(ctx context.Context, list []models.Secret) error
 	SecretList(ctx context.Context, userID string, lastSynced string) ([]models.Secret, error)

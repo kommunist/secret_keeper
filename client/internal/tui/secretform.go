@@ -44,7 +44,7 @@ func (t *Tui) SecretUpdatePage(ID string) {
 
 // Кнопка сохранения на форме
 func (t *Tui) SecretSaveButton(sf models.Secret) {
-	err := t.createSecretFunc(sf)
+	err := t.createSecretFunc(sf, t.currentGetFunc())
 	if err != nil {
 		t.ErrorModal(err.Error(), t.SecretForm(sf))
 	} else {

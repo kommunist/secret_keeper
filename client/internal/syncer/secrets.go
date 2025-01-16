@@ -1,13 +1,12 @@
 package syncer
 
 import (
-	"client/internal/current"
 	"client/internal/logger"
 	"context"
 )
 
 func (i *Item) syncSecrets() {
-	if !current.UserSeted() {
+	if ok := i.currentGetFunc().ID == ""; ok {
 		return
 	}
 
@@ -37,13 +36,13 @@ func (i *Item) syncSecrets() {
 }
 
 func (i *Item) sendLocalSecrets(lastSynced string) error {
-	secrets, err := i.storage.SecretList(context.Background(), current.User.ID, lastSynced)
+	secrets, err := i.storage.SecretList(context.Background(), i.currentGetFunc().ID, lastSynced)
 	if err != nil {
 		logger.Logger.Error("sendLocalSecrets: when get secrets from local storage", "err", err)
 		return err
 	}
 	logger.Logger.Info("sendLocalSecrets: send local secrets", "num", len(secrets))
-	err = i.roamer.SecretSet(secrets)
+	err = i.roamer.SecretSet(secrets, i.currentGetFunc())
 	if err != nil {
 		logger.Logger.Error("sendLocalSecrets: from roamer when send data to storage")
 		return err
@@ -52,7 +51,7 @@ func (i *Item) sendLocalSecrets(lastSynced string) error {
 }
 
 func (i *Item) getServerSecrets(version string) error {
-	secrets, err := i.roamer.SecretGet(version)
+	secrets, err := i.roamer.SecretGet(version, i.currentGetFunc())
 	if err != nil {
 		logger.Logger.Error("getServerSecrets: when get secrets from roamer", "err", err)
 		return err

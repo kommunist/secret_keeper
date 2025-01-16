@@ -3,6 +3,7 @@ package app
 import (
 	"client/internal/config"
 	"client/internal/logger"
+	"client/internal/models"
 	"client/internal/roamer"
 	"client/internal/secret"
 	"client/internal/storage/repository"
@@ -22,6 +23,8 @@ type App struct {
 
 	storage Storager // База
 	syncer  syncer.Item
+
+	current models.User
 }
 
 func Make() (*App, error) {
@@ -35,9 +38,15 @@ func Make() (*App, error) {
 	}
 
 	roamer := roamer.Make(conf)
-	syncer := syncer.Make(conf, stor, &roamer)
 	userItem := user.Make(stor, &roamer)
 	secretItem := secret.Make(stor)
+
+	app := &App{storage: stor}
+
+	syncer := syncer.Make(
+		conf, stor, &roamer,
+		app.getCurrent, // функция получения текущего юзера
+	)
 
 	tuiItem := tui.Make(
 		userItem.SignUP,   // метод для регистрации
@@ -45,11 +54,13 @@ func Make() (*App, error) {
 		secretItem.Upsert, // метод для создания/обновления секрета
 		secretItem.List,   // метод для получения списка секретов
 		secretItem.Show,   // метод для получения одного секрета
+
+		app.setCurrent, // функция задания текущего юзера
+		app.getCurrent, // функция получения текущего юзера
 	)
 
-	return &App{
-		tui:     tuiItem,
-		storage: stor,
-		syncer:  syncer,
-	}, nil
+	app.tui = tuiItem
+	app.syncer = syncer
+
+	return app, nil
 }

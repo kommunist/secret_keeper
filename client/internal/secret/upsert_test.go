@@ -1,7 +1,6 @@
 package secret
 
 import (
-	"client/internal/current"
 	"client/internal/models"
 	"context"
 	"errors"
@@ -51,14 +50,12 @@ func TestUpsert(t *testing.T) {
 			expSecret.UserID = "userID"
 			expSecret.Version = "version"
 
-			current.SetUser(models.User{Login: "login", Password: "password", ID: "userID"})
-
-			defer current.UnsetUser()
-
 			stor.EXPECT().SecretsUpsert(context.Background(), []models.Secret{expSecret}).
 				Return(ex.storErr)
 
-			err := item.Upsert(secret)
+			err := item.Upsert(
+				secret, models.User{ID: "userID"},
+			)
 
 			if ex.storErr == nil {
 				assert.NoError(t, err)

@@ -1,7 +1,6 @@
 package user
 
 import (
-	"client/internal/current"
 	"client/internal/models"
 	"context"
 	"database/sql"
@@ -52,27 +51,28 @@ func TestCall(t *testing.T) {
 	}
 	for _, ex := range exList {
 		t.Run(ex.name, func(t *testing.T) {
-			defer current.UnsetUser()
-
 			stor := NewMockUserAccessor(gomock.NewController(t))
 			roam := NewMockRemoteUserAccessor(gomock.NewController(t))
 
-			user := models.User{Login: "123", Password: "456"}
+			login := "123"
+			password := "456"
 
 			item := Make(stor, roam)
 
-			stor.EXPECT().UserGet(context.Background(), user.Login).Return(
-				models.User{Login: "123", ID: "IDIDID"},
+			stor.EXPECT().UserGet(context.Background(), login).Return(
+				models.User{Login: login, ID: "IDIDID"},
 				ex.localAuthErr,
 			)
 
 			if ex.localAuthErr == sql.ErrNoRows {
 
 				roaUser := models.User{
-					Login: "123", ID: "IDIDID", HashedPassword: "qwert",
+					Login: login, ID: "IDIDID", HashedPassword: "qwert",
 				}
 
-				roam.EXPECT().UserGet(user).Return(roaUser, ex.roamerErr)
+				roam.EXPECT().UserGet(models.User{Login: login, Password: password}).Return(
+					roaUser, ex.roamerErr,
+				)
 				if ex.roamerErr == nil {
 					stor.EXPECT().UserCreate(
 						context.Background(), roaUser,
@@ -80,17 +80,15 @@ func TestCall(t *testing.T) {
 				}
 			}
 
-			result := item.SignIN(user)
+			u, err := item.SignIN(login, password)
 
 			if ex.realErr {
-				assert.Error(t, result)
-				assert.False(t, current.UserSeted())
+				assert.Error(t, err)
 			} else {
-				assert.True(t, current.UserSeted())
-				assert.Equal(t, current.User.Login, user.Login)
-				assert.Equal(t, current.User.Password, user.Password)
-				assert.Equal(t, current.User.ID, "IDIDID")
-				assert.NoError(t, result)
+				assert.Equal(t, u.Login, login)
+				assert.Equal(t, u.Password, password)
+				assert.Equal(t, u.ID, "IDIDID")
+				assert.NoError(t, err)
 			}
 		})
 	}

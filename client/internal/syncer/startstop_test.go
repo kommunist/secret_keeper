@@ -2,7 +2,7 @@ package syncer
 
 import (
 	"client/internal/config"
-	"client/internal/current"
+	"client/internal/models"
 	"testing"
 	"time"
 
@@ -11,13 +11,12 @@ import (
 
 func TestStartStop(t *testing.T) {
 	t.Run("correct_start_and_stop", func(t *testing.T) {
-		current.UnsetUser()
-
 		c := config.Make()
 		stor := NewMockStorageAccessor(gomock.NewController(t))
 		roamer := NewMockRoamerAccessor(gomock.NewController(t))
+		fcu := func() models.User { return models.User{} }
 
-		item := Make(c, stor, roamer)
+		item := Make(c, stor, roamer, fcu)
 
 		item.Start()
 		time.Sleep(3 * time.Second)

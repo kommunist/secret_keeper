@@ -16,9 +16,11 @@ type StorageAccessor interface {
 }
 
 type RoamerAccessor interface {
-	SecretGet(version string) (list []models.Secret, err error)
-	SecretSet(list []models.Secret) error
+	SecretGet(version string, u models.User) (list []models.Secret, err error)
+	SecretSet(list []models.Secret, u models.User) error
 }
+
+type currentGet func() models.User
 
 type verGetter interface{ Get() string }
 
@@ -29,9 +31,16 @@ type Item struct {
 
 	stoper chan bool
 	verGet verGetter
+
+	currentGetFunc currentGet
 }
 
-func Make(settings *config.MainConfig, storage StorageAccessor, roamer RoamerAccessor) Item {
+func Make(
+	settings *config.MainConfig,
+	storage StorageAccessor,
+	roamer RoamerAccessor,
+	currentGetFunc currentGet,
+) Item {
 	return Item{
 		settings: settings,
 		storage:  storage,
@@ -39,6 +48,7 @@ func Make(settings *config.MainConfig, storage StorageAccessor, roamer RoamerAcc
 
 		stoper: make(chan bool),
 
-		verGet: &versioning.Version{},
+		verGet:         &versioning.Version{},
+		currentGetFunc: currentGetFunc,
 	}
 }

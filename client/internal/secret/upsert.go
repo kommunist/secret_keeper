@@ -1,7 +1,6 @@
 package secret
 
 import (
-	"client/internal/current"
 	"client/internal/logger"
 	"client/internal/models"
 	"context"
@@ -9,10 +8,10 @@ import (
 	"github.com/google/uuid"
 )
 
-func (i *Item) Upsert(f models.Secret) error {
+func (i *Item) Upsert(f models.Secret, u models.User) error {
 
 	f.Version = i.verGet.Get()
-	f.UserID = current.User.ID
+	f.UserID = u.ID
 
 	if f.ID == "" {
 		f.ID = uuid.New().String()

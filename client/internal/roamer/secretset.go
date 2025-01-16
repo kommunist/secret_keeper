@@ -2,7 +2,6 @@ package roamer
 
 import (
 	"bytes"
-	"client/internal/current"
 	"client/internal/logger"
 	"client/internal/models"
 	"encoding/json"
@@ -10,7 +9,7 @@ import (
 	"net/http"
 )
 
-func (i *Item) SecretSet(list []models.Secret) error {
+func (i *Item) SecretSet(list []models.Secret, u models.User) error {
 	postBody, err := json.Marshal(list)
 	if err != nil {
 		logger.Logger.Error("error when generate json to send data", "err", err)
@@ -23,8 +22,8 @@ func (i *Item) SecretSet(list []models.Secret) error {
 		logger.Logger.Error("error when prepare post secrets request to server", "err", err)
 		return err
 	}
-	req.Header.Set("Login", current.User.Login)
-	req.Header.Set("Password", current.User.Password)
+	req.Header.Set("Login", u.Login)
+	req.Header.Set("Password", u.Password)
 
 	resp, err := client.Do(req)
 	if err != nil {
