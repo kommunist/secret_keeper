@@ -54,19 +54,3 @@ func Make() (*App, error) {
 		syncer:  syncer,
 	}, nil
 }
-
-func (a *App) Start() error {
-	a.syncer.Start()
-
-	a.tui.Hello()
-	err := a.tui.Start()
-	if err != nil {
-		logger.Logger.Error("Start: when start tui", "err", err)
-		return err
-	}
-	return nil
-}
-
-func (a *App) Stop() {
-	a.tui.Stop()
-}
