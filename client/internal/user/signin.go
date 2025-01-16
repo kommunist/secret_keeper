@@ -14,19 +14,20 @@ func (i *Item) SignIN(f models.User) error {
 	if err != nil {
 		if err == sql.ErrNoRows {
 			logger.Logger.Info("try to athentificate user by server")
-			u, roerr := i.roamer.UserGet(f)
-			if roerr == nil {
-				err = i.storage.UserCreate(context.Background(), u)
-				if err != nil {
-					logger.Logger.Error("when create user locally", "err", err)
-					return err
-				}
-				u.Password = f.Password
-
-				current.SetUser(u)
-				return nil
+			u, err := i.roamer.UserGet(f)
+			if err != nil {
+				return err
 			}
-			return roerr
+
+			err = i.storage.UserCreate(context.Background(), u)
+			if err != nil {
+				logger.Logger.Error("when create user locally", "err", err)
+				return err
+			}
+			u.Password = f.Password
+
+			current.SetUser(u)
+			return nil
 		}
 		return err
 	}
