@@ -26,7 +26,6 @@ type App struct {
 
 func Make() (*App, error) {
 	conf := config.Make()
-	conf.Init()
 
 	stor, err := repository.Make(conf.DatabaseURI)
 

@@ -76,12 +76,12 @@ func TestSyncSecrets(t *testing.T) {
 				current.SetUser(cu)
 			}
 
-			c := config.Make()
+			c := config.MainConfig{}
 
 			stor := NewMockStorageAccessor(gomock.NewController(t))
 			roamer := NewMockRoamerAccessor(gomock.NewController(t))
 
-			item := Make(c, stor, roamer)
+			item := Make(&c, stor, roamer)
 			item.verGet = &MockVer{}
 
 			if !ex.userSeted {

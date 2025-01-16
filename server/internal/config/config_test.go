@@ -12,7 +12,6 @@ func TestInitConfig(t *testing.T) {
 		t.Setenv("DATABASE_URI", "database_uri")
 
 		c := Make()
-		c.Init()
 
 		assert.Equal(t, "database_uri", c.DatabaseURI)
 		assert.Equal(t, "server_uri", c.ServerURL)

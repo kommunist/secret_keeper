@@ -17,12 +17,10 @@ func Make() *MainConfig {
 		ServerURL:   "localhost:1025",
 	}
 
-	return &config
-}
+	config.ParseEnv()
+	config.InitFlags()
 
-func (c *MainConfig) Init() {
-	c.ParseEnv()
-	c.InitFlags()
+	return &config
 }
 
 func (c *MainConfig) InitFlags() {

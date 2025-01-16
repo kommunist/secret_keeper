@@ -40,7 +40,6 @@ type Storager interface {
 // Конструктор структуры
 func Make() (*App, error) {
 	c := config.Make()
-	c.Init()
 
 	rep, err := repository.Make(c.DatabaseURI)
 	if err != nil {

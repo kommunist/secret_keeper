@@ -21,12 +21,10 @@ func Make() *MainConfig {
 		CertKeyPath: "certs/MyKey.key",
 	}
 
-	return &config
-}
+	config.ParseEnv()
+	config.InitFlags()
 
-func (c *MainConfig) Init() {
-	c.ParseEnv()
-	c.InitFlags()
+	return &config
 }
 
 func (c *MainConfig) InitFlags() {
