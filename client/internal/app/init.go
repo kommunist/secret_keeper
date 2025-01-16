@@ -24,7 +24,7 @@ type App struct {
 	syncer  syncer.Item
 }
 
-func Make() (App, error) {
+func Make() (*App, error) {
 	conf := config.Make()
 	conf.Init()
 
@@ -32,7 +32,7 @@ func Make() (App, error) {
 
 	if err != nil {
 		logger.Logger.Error("Error when make storage", "err", err)
-		return App{}, err
+		return nil, err
 	}
 
 	roamer := roamer.Make(conf)
@@ -48,7 +48,7 @@ func Make() (App, error) {
 		secretItem.Show,   // метод для получения одного секрета
 	)
 
-	return App{
+	return &App{
 		tui:     tuiItem,
 		storage: &stor,
 		syncer:  syncer,
