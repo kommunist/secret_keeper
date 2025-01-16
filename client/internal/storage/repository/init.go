@@ -11,13 +11,13 @@ type Storage struct {
 	driver *sql.DB
 }
 
-func Make(dsn string) (Storage, error) {
+func Make(dsn string) (*Storage, error) {
 	driver, err := sql.Open("postgres", dsn)
 
 	if err != nil {
 		logger.Logger.Error("Error when open database", "err", err)
-		return Storage{}, err
+		return nil, err
 	}
 
-	return Storage{driver: driver}, nil
+	return &Storage{driver: driver}, nil
 }

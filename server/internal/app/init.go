@@ -49,14 +49,14 @@ func Make() (*App, error) {
 
 	app := App{
 		setting:   c,
-		storage:   &rep,
-		secretset: secretset.Make(&rep),
-		secretget: secretget.Make(&rep),
+		storage:   rep,
+		secretset: secretset.Make(rep),
+		secretget: secretget.Make(rep),
 
-		userset: userset.Make(&rep),
+		userset: userset.Make(rep),
 		userget: userget.Make(),
 
-		authCheck: auth.Make(&rep),
+		authCheck: auth.Make(rep),
 	}
 	app.Server = http.Server{Addr: c.ServerURL, Handler: app.initRouter()}
 
