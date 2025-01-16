@@ -22,3 +22,6 @@
 
 # log files
 *.log
+
+# certs
+server/certs/*
