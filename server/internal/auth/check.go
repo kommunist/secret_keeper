@@ -24,13 +24,12 @@ func (i *Item) Check(h http.Handler) http.Handler {
 
 		i := encrypt.Item{}
 
-		if i.CheckPasswordHash(authPass, model.HashedPassword) {
-			ctx = context.WithValue(ctx, UserIDKey, model)
-		} else {
+		if ok := i.CheckPasswordHash(authPass, model.HashedPassword); !ok {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 
+		ctx = context.WithValue(ctx, UserIDKey, model)
 		h.ServeHTTP(w, r.WithContext(ctx))
 	}
 	return http.HandlerFunc(authFn)
